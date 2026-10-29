@@ -8,6 +8,7 @@
       :root {
         --bg-dark: #0b0c12;
         --bg-panel: #14161f;
+        --bg-elevated: #191c26;
         --text-main: #ffffff;
         --text-muted: #a1a5b1;
         --accent-1: #ff4d4d;
@@ -33,14 +34,27 @@
         border: 0;
       }
 
+      html { scroll-behavior: smooth; }
+
       body {
         background-color: var(--bg-dark);
+        background-image:
+          radial-gradient(900px 420px at 88% -6%, rgba(255, 77, 77, 0.10), transparent 65%),
+          radial-gradient(760px 380px at 4% 4%, rgba(192, 191, 255, 0.07), transparent 62%);
+        background-repeat: no-repeat;
         color: var(--text-main);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        line-height: 1.6;
+        font-size: 16px;
+        line-height: 1.65;
         display: flex;
         min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
       }
+
+      ::selection { background: rgba(255, 77, 77, 0.35); color: #fff; }
+
+      :focus-visible { outline: 2px solid var(--accent-3); outline-offset: 2px; border-radius: 4px; }
 
       /* Sidebar Navigation */
       .sidebar {
@@ -237,28 +251,47 @@
       .tip-go svg { width: 12px; height: 12px; flex-shrink: 0; }
       .tip-go span.loc { color: var(--accent-2); }
 
-      /* ---------- Всплывающая кнопка для мобильных ---------- */
-      .nav-toggle {
-        position: fixed;
-        top: 0.9rem;
-        left: 0.9rem;
-        z-index: 60;
+      /* ---------- Липкая панель навигации (планшет/телефон) ---------- */
+      .mobile-bar {
         display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 60;
         align-items: center;
         gap: 0.45rem;
-        padding: 0.5rem 0.75rem;
+        padding: 0.5rem 0.6rem;
+        background: rgba(17, 19, 27, 0.94);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      }
+      .nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        flex-shrink: 0;
+        height: 40px;
+        padding: 0 0.65rem;
         border: 1px solid var(--border);
-        border-radius: 999px;
+        border-radius: 9px;
         background: var(--bg-panel);
         color: var(--text-main);
-        font-size: 0.75rem;
+        font-family: inherit;
+        font-size: 0.72rem;
         font-weight: 600;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.05em;
         text-transform: uppercase;
         cursor: pointer;
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
       }
-      .nav-toggle svg { width: 16px; height: 16px; }
+      .nav-toggle:hover { border-color: var(--accent-3); }
+      .nav-toggle svg { width: 16px; height: 16px; flex-shrink: 0; }
+      .mobile-bar .select-wrap { flex: 1; min-width: 0; }
+      .mobile-bar .jump-select { height: 40px; padding-top: 0; padding-bottom: 0; font-size: 0.84rem; }
+      .mobile-bar .pager button { min-height: 40px; height: 40px; min-width: 38px; padding: 0 0.4rem; }
       .nav-backdrop {
         position: fixed;
         inset: 0;
@@ -270,10 +303,11 @@
       /* Main Content Area */
       .content-wrapper {
         flex: 1;
-        padding: 2rem;
-        overflow-y: auto;
+        min-width: 0;
+        padding: 2.2rem 2.4rem 4rem;
         max-width: 100%;
       }
+      .content-wrapper > * { max-width: 1080px; }
 
       /* Hero Section (Header only, no buttons) */
       .hero-header {
@@ -328,25 +362,29 @@
       /* Typography & Layout */
       h2 {
         color: var(--text-main);
-        font-size: 1.75rem;
-        margin-top: 3rem;
-        margin-bottom: 1rem;
+        font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+        margin-top: 3.4rem;
+        margin-bottom: 1.1rem;
         border-left: 4px solid var(--accent-2);
         padding-left: 1rem;
-        scroll-margin-top: 1rem;
+        scroll-margin-top: 1.5rem;
+        letter-spacing: -0.01em;
+        line-height: 1.25;
       }
 
       h3 {
         color: var(--text-main);
-        font-size: 1.15rem;
-        margin-top: 2rem;
+        font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+        margin-top: 2.2rem;
         margin-bottom: 0.8rem;
+        line-height: 1.35;
       }
 
-      p { margin-bottom: 1rem; color: var(--text-main); }
-      ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+      p { margin-bottom: 1rem; color: var(--text-main); max-width: 78ch; }
+      ul, ol { margin-bottom: 1.1rem; padding-left: 1.5rem; max-width: 82ch; }
       li { margin-bottom: 0.5rem; color: var(--text-main); }
       li > ul, li > ol { margin-top: 0.5rem; }
+      li::marker { color: var(--accent-2); }
 
       .muted { color: var(--text-muted); }
       strong { color: #fff; }
@@ -376,20 +414,85 @@
       tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
       td code { color: var(--accent-3); font-size: 0.85em; }
 
-      .table-scroll { overflow-x: auto; }
+      .table-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 10px;
+        margin: 1.5rem 0;
+        position: relative;
+      }
+      .table-scroll table { margin: 0; }
+      .table-scroll::-webkit-scrollbar { height: 8px; }
+      .table-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+      tbody tr { transition: background 0.15s ease; }
+      tbody tr:hover { background: rgba(255, 159, 28, 0.06); }
 
       /* Code blocks */
-      pre {
-        background-color: var(--code-bg);
-        color: var(--code-text);
-        padding: 1.2rem;
-        border-radius: 6px;
-        overflow-x: auto;
-        margin: 1.2rem 0;
-        font-size: 0.82rem;
+      .code-block {
+        margin: 1.4rem 0;
         border: 1px solid var(--border);
-        line-height: 1.55;
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--code-bg);
       }
+      .code-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.45rem 0.6rem 0.45rem 0.9rem;
+        background: #12141d;
+        border-bottom: 1px solid var(--border);
+      }
+      .code-lang {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+      }
+      .code-lang::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent-2);
+      }
+      .copy-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.28rem 0.55rem;
+        font-size: 0.7rem;
+        font-family: inherit;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+      .copy-btn:hover { color: var(--text-main); border-color: var(--accent-3); }
+      .copy-btn.done { color: #6ee7a8; border-color: #6ee7a8; }
+      .copy-btn svg { width: 13px; height: 13px; }
+
+      pre {
+        background-color: transparent;
+        color: var(--code-text);
+        padding: 1rem 1.1rem;
+        overflow-x: auto;
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1.6;
+        -webkit-overflow-scrolling: touch;
+      }
+      pre::-webkit-scrollbar { height: 8px; }
+      pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
       code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
 
       /* Feature grid */
@@ -402,8 +505,14 @@
       .feature-card {
         background: var(--bg-panel);
         border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 1rem;
+        border-radius: 10px;
+        padding: 1.1rem 1.15rem;
+        transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+      }
+      .feature-card:hover {
+        border-color: rgba(192, 191, 255, 0.45);
+        background: #171a24;
+        transform: translateY(-1px);
       }
       .feature-card strong { color: var(--accent-3); }
 
@@ -435,11 +544,29 @@
       .diagram {
         background: var(--bg-panel);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 10px;
         padding: 1rem 0.5rem;
         margin: 1.5rem 0 0.5rem;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity;
+        -webkit-mask-image: linear-gradient(to right, #000 92%, rgba(0, 0, 0, 0.35) 100%);
+        mask-image: linear-gradient(to right, #000 92%, rgba(0, 0, 0, 0.35) 100%);
       }
+      .diagram::-webkit-scrollbar { height: 8px; }
+      .diagram::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+      .diagram svg { scroll-snap-align: start; }
+      .diagram-hint {
+        display: none;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin: -0.9rem 0 0;
+      }
+      .diagram-hint svg { width: 13px; height: 13px; color: var(--accent-3); flex-shrink: 0; }
       .diagram svg { display: block; width: 100%; height: auto; min-width: 620px; }
       figcaption {
         color: var(--text-muted);
@@ -467,6 +594,114 @@
         font-size: 1rem;
       }
 
+      /* Прогресс чтения */
+      .read-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        z-index: 70;
+        background: transparent;
+        pointer-events: none;
+      }
+      .read-progress span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+        transition: width 0.12s linear;
+      }
+
+      /* Быстрый выбор раздела (телефон/планшет) */
+      .select-wrap { position: relative; flex: 1; min-width: 0; }
+      .select-wrap svg {
+        position: absolute;
+        right: 0.7rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 15px;
+        height: 15px;
+        color: var(--accent-3);
+        pointer-events: none;
+      }
+      .jump-select {
+        width: 100%;
+        appearance: none;
+        -webkit-appearance: none;
+        padding: 0.7rem 2.2rem 0.7rem 0.85rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg-panel);
+        color: var(--text-main);
+        font-family: inherit;
+        font-size: 0.88rem;
+        cursor: pointer;
+      }
+      .jump-select:focus-visible { border-color: var(--accent-3); outline: none; }
+      .jump-select option { background: var(--bg-panel); color: var(--text-main); }
+
+      .pager { display: flex; gap: 0.4rem; }
+      .pager button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+        min-width: 46px;
+        padding: 0 0.7rem;
+        height: 100%;
+        min-height: 44px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg-panel);
+        color: var(--text-muted);
+        font-family: inherit;
+        font-size: 0.78rem;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+      .pager button:hover:not(:disabled) { color: var(--text-main); border-color: var(--accent-3); }
+      .pager button:disabled { opacity: 0.35; cursor: default; }
+      .pager svg { width: 15px; height: 15px; }
+
+      /* Кнопка «наверх» */
+      .to-top {
+        position: fixed;
+        right: 1.4rem;
+        bottom: 1.4rem;
+        z-index: 55;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-elevated);
+        color: var(--text-main);
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+      }
+      .to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+      .to-top:hover { border-color: var(--accent-3); }
+      .to-top svg { width: 18px; height: 18px; }
+
+      .table-hint {
+        display: none;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin: -0.9rem 0 1.2rem;
+      }
+      .table-hint svg { width: 13px; height: 13px; color: var(--accent-2); flex-shrink: 0; }
+
       .footer-note {
         margin-top: 3rem;
         padding-top: 1.5rem;
@@ -475,17 +710,19 @@
         font-size: 0.85rem;
       }
 
+      /* ---------- Планшет и мобильный: выдвижная панель ---------- */
       @media (max-width: 900px) {
-        .nav-toggle { display: inline-flex; }
+        .mobile-bar { display: flex; }
         .sidebar {
           position: fixed;
           top: 0;
           left: 0;
+          z-index: 50; /* выше подложки (45), иначе тапы попадают в затемнение */
           height: 100vh;
           width: min(86vw, 320px);
           border-right: 1px solid var(--border);
           border-bottom: none;
-          padding: 1.25rem 1rem;
+          padding: 1.1rem 1rem;
           gap: 1.1rem;
           transform: translateX(-102%);
           transition: transform 0.24s ease;
@@ -493,31 +730,165 @@
         }
         body.nav-open .sidebar { transform: translateX(0); }
         body.nav-open .nav-backdrop { display: block; }
-        body.nav-open .nav-toggle { display: none; }
-        .sidebar.collapsed { width: min(86vw, 320px); padding: 1.25rem 1rem; }
+        .sidebar.collapsed { width: min(86vw, 320px); padding: 1.1rem 1rem; }
         .sidebar.collapsed .logo,
         .sidebar.collapsed .nav-label,
         .sidebar.collapsed .nav-num { display: inline; }
-        .sidebar.collapsed .nav-list a { justify-content: flex-start; padding: 0.6rem 0.7rem; }
+        .sidebar.collapsed .nav-list a { justify-content: flex-start; padding: 0.62rem 0.7rem; }
         .sidebar.collapsed .sidebar-head { justify-content: space-between; }
         .sidebar.collapsed .icon-btn .ico-collapse { display: block; }
         .sidebar.collapsed .icon-btn .ico-expand { display: none; }
-        .nav-list a { font-size: 0.82rem; padding: 0.65rem 0.7rem; }
+        .nav-list a { font-size: 0.82rem; padding: 0.66rem 0.7rem; }
         .sidebar-meta { display: block; font-size: 0.72rem; }
-        .content-wrapper { padding: 4.4rem 1rem 1rem; width: 100%; }
-        .hero-header h1 { font-size: 2.4rem; }
+
+        .content-wrapper { padding: 4.8rem 1.1rem 3.5rem; width: 100%; }
+        .content-wrapper > * { max-width: 100%; }
+
+        .hero-header { margin-bottom: 2rem; padding-bottom: 1.5rem; }
+        .hero-header h1 { font-size: clamp(2rem, 9vw, 2.6rem); }
         .hero-header p { max-width: 100%; }
-        h2 { font-size: 1.35rem; margin-top: 2rem; }
-        pre { font-size: 0.72rem; padding: 0.9rem; }
-        .tip { max-width: 260px; }
+        .hero-meta { gap: 0.4rem; }
+        .badge { font-size: 0.66rem; padding: 0.28rem 0.6rem; }
+
+        h2 { margin-top: 2.4rem; }
+        section { scroll-margin-top: 4.4rem; }
+        h3 { margin-top: 1.7rem; }
+        p, ul, ol { max-width: 100%; }
+
+        .table-hint { display: flex; }
+        pre { font-size: 0.74rem; padding: 0.9rem; }
+        .tip { max-width: min(78vw, 300px); }
+        .to-top { right: 1rem; bottom: 1rem; }
       }
-    </style>
+
+      /* ---------- Телефон ---------- */
+      @media (max-width: 640px) {
+        body { font-size: 15px; }
+        .content-wrapper { padding: 4.6rem 0.9rem 3rem; }
+
+        .hero-header h1 { font-size: clamp(1.85rem, 11vw, 2.3rem); }
+        .hero-header p { color: var(--text-muted); font-size: 0.95rem; }
+        .feature-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+
+        h2 {
+          font-size: 1.3rem;
+          padding-left: 0.75rem;
+          border-left-width: 3px;
+          line-height: 1.3;
+        }
+        h3 { font-size: 1.02rem; }
+
+        /* Таблицы превращаются в карточки: первая ячейка — заголовок карточки */
+        .table-scroll { overflow: visible; border-radius: 0; }
+        .table-scroll table,
+        .table-scroll thead,
+        .table-scroll tbody,
+        .table-scroll th,
+        .table-scroll td,
+        .table-scroll tr { display: block; width: 100%; }
+        .table-scroll thead { display: none; }
+        .table-scroll table { border: none; font-size: 0.88rem; margin: 0; }
+        .table-scroll tbody tr {
+          background: var(--bg-panel) !important;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          padding: 0.35rem 0.15rem;
+          margin-bottom: 0.7rem;
+        }
+        .table-scroll tbody tr:hover { background: var(--bg-panel) !important; }
+        .table-scroll td {
+          border: none;
+          border-bottom: 1px dashed rgba(42, 46, 58, 0.9);
+          padding: 0.5rem 0.85rem;
+          display: grid;
+          grid-template-columns: minmax(84px, 34%) 1fr;
+          gap: 0.6rem;
+          align-items: start;
+        }
+        .table-scroll td:last-child { border-bottom: none; }
+        .table-scroll td::before {
+          content: attr(data-label);
+          font-size: 0.66rem;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: var(--text-muted);
+          line-height: 1.5;
+          padding-top: 0.1rem;
+        }
+        .table-scroll td:first-child {
+          display: block;
+          background: rgba(255, 159, 28, 0.07);
+          border-radius: 8px 8px 0 0;
+          border-bottom: 1px solid var(--border);
+          color: #fff;
+          font-weight: 600;
+          font-size: 0.95rem;
+          padding: 0.6rem 0.85rem;
+        }
+        .table-scroll td:first-child::before { display: none; }
+        .table-scroll td[data-empty] { display: none; }
+        .table-hint { display: none; }
+
+        .nav-toggle-label { display: none; }
+        .nav-toggle { padding: 0 0.55rem; }
+        .mobile-bar .jump-select { font-size: 0.8rem; padding-left: 0.6rem; }
+        .code-block { border-radius: 10px; margin: 1.1rem 0; }
+        .code-head { padding: 0.4rem 0.5rem 0.4rem 0.7rem; }
+        .code-lang { font-size: 0.64rem; }
+        .copy-btn { font-size: 0.66rem; padding: 0.4rem 0.6rem; }
+        pre { font-size: 0.7rem; padding: 0.8rem; line-height: 1.55; }
+
+        .diagram { padding: 0.5rem 0.25rem; border-radius: 10px; -webkit-mask-image: none; mask-image: none; }
+        .diagram-hint { display: flex; margin: 0.5rem 0 1.2rem; }
+        .diagram svg { min-width: 560px; }
+        figcaption { font-size: 0.75rem; }
+
+        .warning-box, .info-box, .gold-box { padding: 0.85rem 0.9rem; font-size: 0.92rem; }
+        .feature-card { padding: 0.9rem; }
+        .feature-card ul { padding-left: 1.1rem; }
+        .footer-note { font-size: 0.8rem; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      }
+        </style>
   </head>
   <body>
-    <button class="nav-toggle" id="navToggle" aria-controls="sidebar" aria-expanded="false">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
-      Разделы
-    </button>
+    <div class="read-progress" aria-hidden="true"><span id="readBar"></span></div>
+    <header class="mobile-bar" role="group" aria-label="Навигация по документу">
+      <button class="nav-toggle" id="navToggle" aria-controls="sidebar" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+        <span class="nav-toggle-label">Разделы</span>
+      </button>
+      <div class="select-wrap">
+        <select class="jump-select" id="jumpSelect" aria-label="Перейти к разделу">
+            <option value="#concept">1. Концепция</option>
+            <option value="#audience">2. Аудитория</option>
+            <option value="#principles">3. Принципы</option>
+            <option value="#core-loop">4. Core Loop</option>
+            <option value="#mechanics">5. Механики</option>
+            <option value="#economy">6. Экономика</option>
+            <option value="#account">7. Аккаунт и персонажи</option>
+            <option value="#registration">8. Регистрация</option>
+            <option value="#db-architecture">9. Архитектура БД</option>
+            <option value="#metrics">10. Метрики</option>
+            <option value="#roadmap">11. Roadmap</option>
+            <option value="#appendix">Приложения</option>
+        </select>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="pager">
+        <button type="button" id="prevSection" aria-label="Предыдущий раздел" title="Предыдущий раздел">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+        </button>
+        <button type="button" id="nextSection" aria-label="Следующий раздел" title="Следующий раздел">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg>
+        </button>
+      </div>
+    </header>
+
     <div class="nav-backdrop" id="navBackdrop" hidden></div>
 
     <!-- Left Vertical Navigation -->
@@ -694,6 +1065,12 @@
       </div>
     </div>
 
+    <button class="to-top" id="toTop" type="button" aria-label="Наверх" title="Наверх">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>
+      </svg>
+    </button>
+
     <!-- Main Content -->
     <main class="content-wrapper">
       <header class="hero-header">
@@ -779,6 +1156,7 @@
         <h2>2. Целевая аудитория и референсы</h2>
 
         <h3>2.1 Сегменты</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -792,45 +1170,46 @@
             </thead>
             <tbody>
               <tr>
-                <td>Ветеран</td>
-                <td>28–40 лет, играл в R2 / Lineage‑подобные</td>
-                <td>Знакомые петли, статус, клановые войны</td>
-                <td>Точные референсы, GvG, титулы</td>
-                <td>25%</td>
+                <td data-label="Сегмент">Ветеран</td>
+                <td data-label="Кто это">28–40 лет, играл в R2 / Lineage‑подобные</td>
+                <td data-label="Что ищет">Знакомые петли, статус, клановые войны</td>
+                <td data-label="Как удерживаем">Точные референсы, GvG, титулы</td>
+                <td data-label="Доля ожид.">25%</td>
               </tr>
               <tr>
-                <td>Фармер‑экономист</td>
-                <td>22–35, любит рынок и производство</td>
-                <td>Крафт, арбитраж, монополия на ресурс</td>
-                <td>Биржа, рецепты, контракты</td>
-                <td>25%</td>
+                <td data-label="Сегмент">Фармер‑экономист</td>
+                <td data-label="Кто это">22–35, любит рынок и производство</td>
+                <td data-label="Что ищет">Крафт, арбитраж, монополия на ресурс</td>
+                <td data-label="Как удерживаем">Биржа, рецепты, контракты</td>
+                <td data-label="Доля ожид.">25%</td>
               </tr>
               <tr>
-                <td>PvP‑игрок</td>
-                <td>18–30, приходит за дракой</td>
-                <td>Честный бой, рейтинг, арены</td>
-                <td>Арены, осады, рейтинги сезона</td>
-                <td>30%</td>
+                <td data-label="Сегмент">PvP‑игрок</td>
+                <td data-label="Кто это">18–30, приходит за дракой</td>
+                <td data-label="Что ищет">Честный бой, рейтинг, арены</td>
+                <td data-label="Как удерживаем">Арены, осады, рейтинги сезона</td>
+                <td data-label="Доля ожид.">30%</td>
               </tr>
               <tr>
-                <td>Социальный / казуал</td>
-                <td>20–40, играет «за компанию»</td>
-                <td>Гильдия, чат, ощущение нужности</td>
-                <td>Роли поддержки, снабжение тыла</td>
-                <td>15%</td>
+                <td data-label="Сегмент">Социальный / казуал</td>
+                <td data-label="Кто это">20–40, играет «за компанию»</td>
+                <td data-label="Что ищет">Гильдия, чат, ощущение нужности</td>
+                <td data-label="Как удерживаем">Роли поддержки, снабжение тыла</td>
+                <td data-label="Доля ожид.">15%</td>
               </tr>
               <tr>
-                <td>Соло‑исследователь</td>
-                <td>20–35, любит мир и историю</td>
-                <td>Атмосфера, секреты, коллекции</td>
-                <td>Лор, скрытые зоны, коллекции</td>
-                <td>5%</td>
+                <td data-label="Сегмент">Соло‑исследователь</td>
+                <td data-label="Кто это">20–35, любит мир и историю</td>
+                <td data-label="Что ищет">Атмосфера, секреты, коллекции</td>
+                <td data-label="Как удерживаем">Лор, скрытые зоны, коллекции</td>
+                <td data-label="Доля ожид.">5%</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h3>2.2 Что берём у R2 и что меняем</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -843,46 +1222,46 @@
             </thead>
             <tbody>
               <tr>
-                <td>Открытый мир с PvP‑зонами</td>
-                <td>Да, как есть</td>
-                <td>Мягче кривая наказания на низких уровнях</td>
-                <td>Не терять новичков в первые часы</td>
+                <td data-label="Элемент R2">Открытый мир с PvP‑зонами</td>
+                <td data-label="Берём">Да, как есть</td>
+                <td data-label="Меняем">Мягче кривая наказания на низких уровнях</td>
+                <td data-label="Зачем">Не терять новичков в первые часы</td>
               </tr>
               <tr>
-                <td>Споты фарма с боссом‑держателем</td>
-                <td>Да</td>
-                <td>Добавляем контракты гильдий на поставку</td>
-                <td>Экономика становится социальной</td>
+                <td data-label="Элемент R2">Споты фарма с боссом‑держателем</td>
+                <td data-label="Берём">Да</td>
+                <td data-label="Меняем">Добавляем контракты гильдий на поставку</td>
+                <td data-label="Зачем">Экономика становится социальной</td>
               </tr>
               <tr>
-                <td>Заточка с шансом разрушения</td>
-                <td>Да, это ядро эмоций</td>
-                <td>Страховочные предметы, добываемые только в игре</td>
-                <td>Риск остаётся, но управляемый</td>
+                <td data-label="Элемент R2">Заточка с шансом разрушения</td>
+                <td data-label="Берём">Да, это ядро эмоций</td>
+                <td data-label="Меняем">Страховочные предметы, добываемые только в игре</td>
+                <td data-label="Зачем">Риск остаётся, но управляемый</td>
               </tr>
               <tr>
-                <td>Классы с жёсткими ролями</td>
-                <td>Да</td>
-                <td>Второй персонаж на аккаунте под другую роль</td>
-                <td>Игрок закрывает 2 роли без 4 часов в день</td>
+                <td data-label="Элемент R2">Классы с жёсткими ролями</td>
+                <td data-label="Берём">Да</td>
+                <td data-label="Меняем">Второй персонаж на аккаунте под другую роль</td>
+                <td data-label="Зачем">Игрок закрывает 2 роли без 4 часов в день</td>
               </tr>
               <tr>
-                <td>Гильдейские войны</td>
-                <td>Да</td>
-                <td>Расписание войн и публичные логи</td>
-                <td>Прозрачность снижает токсичность</td>
+                <td data-label="Элемент R2">Гильдейские войны</td>
+                <td data-label="Берём">Да</td>
+                <td data-label="Меняем">Расписание войн и публичные логи</td>
+                <td data-label="Зачем">Прозрачность снижает токсичность</td>
               </tr>
               <tr>
-                <td>Долгая прокачка 1–60</td>
-                <td>Частично</td>
-                <td>Кап за ~20 часов — точка входа в мету</td>
-                <td>Ценность времени игрока</td>
+                <td data-label="Элемент R2">Долгая прокачка 1–60</td>
+                <td data-label="Берём">Частично</td>
+                <td data-label="Меняем">Кап за ~20 часов — точка входа в мету</td>
+                <td data-label="Зачем">Ценность времени игрока</td>
               </tr>
               <tr>
-                <td>Жёсткая потеря вещей при смерти</td>
-                <td>Частично</td>
-                <td>Теряем ресурсы и опыт, не экипировку (кроме флага PvP)</td>
-                <td>Снижаем порог входа</td>
+                <td data-label="Элемент R2">Жёсткая потеря вещей при смерти</td>
+                <td data-label="Берём">Частично</td>
+                <td data-label="Меняем">Теряем ресурсы и опыт, не экипировку (кроме флага PvP)</td>
+                <td data-label="Зачем">Снижаем порог входа</td>
               </tr>
             </tbody>
           </table>
@@ -963,6 +1342,7 @@
               <text x="500" y="462" text-anchor="middle" class="svg-text-dim">Каждая петля поднимает цену участия: время → риск потери → социальные обязательства</text>
             </svg>
           </div>
+          <div class="diagram-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>схема прокручивается вбок</div>
           <figcaption>Рис. 1. Три петли вовлечения и рост цены участия.</figcaption>
         </figure>
 
@@ -1005,6 +1385,7 @@
       <section id="mechanics">
         <h2>5. Основные механики и правила</h2>
 
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1016,19 +1397,19 @@
             </thead>
             <tbody>
               <tr>
-                <td>P0</td>
-                <td>Обязательно к MVP</td>
-                <td>Мир и перемещение, PvE и споты, лут, заточка, инвентарь, прогресс персонажа, регистрация</td>
+                <td data-label="Приоритет">P0</td>
+                <td data-label="Значение">Обязательно к MVP</td>
+                <td data-label="Что входит">Мир и перемещение, PvE и споты, лут, заточка, инвентарь, прогресс персонажа, регистрация</td>
               </tr>
               <tr>
-                <td>P1</td>
-                <td>Первый крупный апдейт</td>
-                <td>Гильдии, PvP‑флаги и карма, аукцион, крафт‑цепочки, сезон</td>
+                <td data-label="Приоритет">P1</td>
+                <td data-label="Значение">Первый крупный апдейт</td>
+                <td data-label="Что входит">Гильдии, PvP‑флаги и карма, аукцион, крафт‑цепочки, сезон</td>
               </tr>
               <tr>
-                <td>P2</td>
-                <td>Рост</td>
-                <td>Осады, территориальная политика, кросс‑серверные события, мобильный компаньон</td>
+                <td data-label="Приоритет">P2</td>
+                <td data-label="Значение">Рост</td>
+                <td data-label="Что входит">Осады, территориальная политика, кросс‑серверные события, мобильный компаньон</td>
               </tr>
             </tbody>
           </table>
@@ -1052,6 +1433,7 @@
 
         <h3>Лут, экипировка и заточка</h3>
         <p>Сердце эмоций продукта. Модель: предмет редкости → базовая сила → уровни заточки (+1…+15) с риском.</p>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1063,11 +1445,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>+1…+3</td><td>100–85%</td><td>Ресурс теряется, предмет цел</td><td>Спокойно улучшает базу</td></tr>
-              <tr><td>+4…+7</td><td>80–55%</td><td>Ресурс + понижение на 1</td><td>Думает, стоит ли сегодня</td></tr>
-              <tr><td>+8…+10</td><td>50–30%</td><td>Предмет может быть разрушен</td><td>Использует страховку из игры</td></tr>
-              <tr><td>+11…+13</td><td>25–12%</td><td>Высокий риск разрушения</td><td>Готовится, копит, идёт на боссов</td></tr>
-              <tr><td>+14…+15</td><td>8–3%</td><td>Почти всегда разрушение</td><td>Предмет‑легенда, предмет гордости</td></tr>
+              <tr><td data-label="Уровень заточки">+1…+3</td><td data-label="Шанс успеха">100–85%</td><td data-label="Цена провала">Ресурс теряется, предмет цел</td><td data-label="Что делает игрок">Спокойно улучшает базу</td></tr>
+              <tr><td data-label="Уровень заточки">+4…+7</td><td data-label="Шанс успеха">80–55%</td><td data-label="Цена провала">Ресурс + понижение на 1</td><td data-label="Что делает игрок">Думает, стоит ли сегодня</td></tr>
+              <tr><td data-label="Уровень заточки">+8…+10</td><td data-label="Шанс успеха">50–30%</td><td data-label="Цена провала">Предмет может быть разрушен</td><td data-label="Что делает игрок">Использует страховку из игры</td></tr>
+              <tr><td data-label="Уровень заточки">+11…+13</td><td data-label="Шанс успеха">25–12%</td><td data-label="Цена провала">Высокий риск разрушения</td><td data-label="Что делает игрок">Готовится, копит, идёт на боссов</td></tr>
+              <tr><td data-label="Уровень заточки">+14…+15</td><td data-label="Шанс успеха">8–3%</td><td data-label="Цена провала">Почти всегда разрушение</td><td data-label="Что делает игрок">Предмет‑легенда, предмет гордости</td></tr>
             </tbody>
           </table>
         </div>
@@ -1115,6 +1497,7 @@
 
         <h3>Целевые параметры баланса (MVP)</h3>
         <p class="muted">Стартовые гипотезы для прототипа, а не финальный баланс: они задают рамку, внутри которой команда может двигать значения, не ломая ощущение игры.</p>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1125,16 +1508,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>Время убийства обычного моба</td><td>4–8 сек</td><td>Ритм фарма приятный, но не превращается в клик</td></tr>
-              <tr><td>Время убийства элиты</td><td>25–40 сек</td><td>Достаточно, чтобы конкурирующая группа успела вмешаться</td></tr>
-              <tr><td>Время убийства игрока в PvP</td><td>8–15 сек</td><td>Ошибка наказуема, но есть время среагировать и уйти</td></tr>
-              <tr><td>Время до 10 уровня (туториал)</td><td>60–90 мин</td><td>Первая значимая награда в первую сессию</td></tr>
-              <tr><td>Время до капа (60 уровень)</td><td>18–24 ч</td><td>2–3 недели для играющего по 1 часу в день</td></tr>
-              <tr><td>Шанс редкого ресурса с элиты</td><td>8–12%</td><td>Достаточно редко для цены, достаточно часто для надежды</td></tr>
-              <tr><td>Шанс заточки на +8 / +12</td><td>40% / 18%</td><td>Точка, где появляется настоящий страх потери</td></tr>
-              <tr><td>Время на одном споте до падения дропа</td><td>после 3 ч</td><td>Не наказывает нормальную сессию, мешает боту</td></tr>
-              <tr><td>Стартовый размер сумки</td><td>60 слотов</td><td>Цикл «заполнил → вернулся в город» работает за 30–40 минут</td></tr>
-              <tr><td>Оборот аукциона на игрока в день</td><td>3–8 сделок</td><td>Экономика живая, но не превращается в биржевой симулятор</td></tr>
+              <tr><td data-label="Параметр">Время убийства обычного моба</td><td data-label="Цель MVP">4–8 сек</td><td data-label="Почему так">Ритм фарма приятный, но не превращается в клик</td></tr>
+              <tr><td data-label="Параметр">Время убийства элиты</td><td data-label="Цель MVP">25–40 сек</td><td data-label="Почему так">Достаточно, чтобы конкурирующая группа успела вмешаться</td></tr>
+              <tr><td data-label="Параметр">Время убийства игрока в PvP</td><td data-label="Цель MVP">8–15 сек</td><td data-label="Почему так">Ошибка наказуема, но есть время среагировать и уйти</td></tr>
+              <tr><td data-label="Параметр">Время до 10 уровня (туториал)</td><td data-label="Цель MVP">60–90 мин</td><td data-label="Почему так">Первая значимая награда в первую сессию</td></tr>
+              <tr><td data-label="Параметр">Время до капа (60 уровень)</td><td data-label="Цель MVP">18–24 ч</td><td data-label="Почему так">2–3 недели для играющего по 1 часу в день</td></tr>
+              <tr><td data-label="Параметр">Шанс редкого ресурса с элиты</td><td data-label="Цель MVP">8–12%</td><td data-label="Почему так">Достаточно редко для цены, достаточно часто для надежды</td></tr>
+              <tr><td data-label="Параметр">Шанс заточки на +8 / +12</td><td data-label="Цель MVP">40% / 18%</td><td data-label="Почему так">Точка, где появляется настоящий страх потери</td></tr>
+              <tr><td data-label="Параметр">Время на одном споте до падения дропа</td><td data-label="Цель MVP">после 3 ч</td><td data-label="Почему так">Не наказывает нормальную сессию, мешает боту</td></tr>
+              <tr><td data-label="Параметр">Стартовый размер сумки</td><td data-label="Цель MVP">60 слотов</td><td data-label="Почему так">Цикл «заполнил → вернулся в город» работает за 30–40 минут</td></tr>
+              <tr><td data-label="Параметр">Оборот аукциона на игрока в день</td><td data-label="Цель MVP">3–8 сделок</td><td data-label="Почему так">Экономика живая, но не превращается в биржевой симулятор</td></tr>
             </tbody>
           </table>
         </div>
@@ -1145,6 +1528,7 @@
         <h2>6. Экономика и монетизация</h2>
 
         <h3>6.1 Источники и стоки</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1154,17 +1538,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>Дроп с мобов и боссов</td><td>Заточка и разрушение предметов</td></tr>
-              <tr><td>Ресурсы зон и спотов</td><td>Крафт с расходом компонентов</td></tr>
-              <tr><td>Награды сезонов и событий</td><td>Потеря лута при смерти в опасных зонах</td></tr>
-              <tr><td>Контракты гильдий</td><td>Налоги территорий и комиссии аукциона</td></tr>
-              <tr><td>Косметика (без влияния на бой)</td><td>Ремонт, расходники, страховки, пошлины</td></tr>
+              <tr><td data-label="Источники (приход в мир)">Дроп с мобов и боссов</td><td data-label="Стоки (уход из мира)">Заточка и разрушение предметов</td></tr>
+              <tr><td data-label="Источники (приход в мир)">Ресурсы зон и спотов</td><td data-label="Стоки (уход из мира)">Крафт с расходом компонентов</td></tr>
+              <tr><td data-label="Источники (приход в мир)">Награды сезонов и событий</td><td data-label="Стоки (уход из мира)">Потеря лута при смерти в опасных зонах</td></tr>
+              <tr><td data-label="Источники (приход в мир)">Контракты гильдий</td><td data-label="Стоки (уход из мира)">Налоги территорий и комиссии аукциона</td></tr>
+              <tr><td data-label="Источники (приход в мир)">Косметика (без влияния на бой)</td><td data-label="Стоки (уход из мира)">Ремонт, расходники, страховки, пошлины</td></tr>
             </tbody>
           </table>
         </div>
         <p>Целевая инфляция ресурса — 3–5% в месяц. Контроль: динамический дроп и «сжигающие» события, где излишек компонентов обменивается на косметическую награду.</p>
 
         <h3>6.2 Монетизационное обещание игроку</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1175,11 +1560,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>Косметика (образы, декор маунтов, скины)</td><td>Предметы с характеристиками</td><td>Прямая покупка, ротация</td></tr>
-              <tr><td>Слоты персонажей (3‑й и 4‑й)</td><td>Ресурсы, золото, опыт</td><td>Разовые разблокировки</td></tr>
-              <tr><td>Удобство (склад, слоты аукциона)</td><td>Шансы заточки, страховки</td><td>Подписка «премиум»</td></tr>
-              <tr><td>Сезонный батлпасс (косметика + ресурсы)</td><td>Ускорение фарма с множителями</td><td>Сезон 10–12 недель</td></tr>
-              <tr><td>Гильдейские эмблемы и знамёна</td><td>Респавн‑таймеры и позиции боссов</td><td>Покупка внутри гильдии</td></tr>
+              <tr><td data-label="Продаём">Косметика (образы, декор маунтов, скины)</td><td data-label="Не продаём никогда">Предметы с характеристиками</td><td data-label="Формат">Прямая покупка, ротация</td></tr>
+              <tr><td data-label="Продаём">Слоты персонажей (3‑й и 4‑й)</td><td data-label="Не продаём никогда">Ресурсы, золото, опыт</td><td data-label="Формат">Разовые разблокировки</td></tr>
+              <tr><td data-label="Продаём">Удобство (склад, слоты аукциона)</td><td data-label="Не продаём никогда">Шансы заточки, страховки</td><td data-label="Формат">Подписка «премиум»</td></tr>
+              <tr><td data-label="Продаём">Сезонный батлпасс (косметика + ресурсы)</td><td data-label="Не продаём никогда">Ускорение фарма с множителями</td><td data-label="Формат">Сезон 10–12 недель</td></tr>
+              <tr><td data-label="Продаём">Гильдейские эмблемы и знамёна</td><td data-label="Не продаём никогда">Респавн‑таймеры и позиции боссов</td><td data-label="Формат">Покупка внутри гильдии</td></tr>
             </tbody>
           </table>
         </div>
@@ -1202,6 +1587,7 @@
         <p>Раздел отвечает на вопрос из брифа: сколько персонажей живёт на аккаунте и что из данных принадлежит аккаунту, а что персонажу.</p>
 
         <h3>7.1 Варианты и рекомендация</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1214,28 +1600,28 @@
             </thead>
             <tbody>
               <tr>
-                <td>1 персонаж на аккаунт</td>
-                <td>Предельно просто; сила привязанности на уровне игрока; нет вопроса «на кого заходить»</td>
-                <td>Игрок «заперт» в роли; для другой роли нужен второй аккаунт → появляется мультиаккаунтинг</td>
-                <td>Не берём</td>
+                <td data-label="Вариант">1 персонаж на аккаунт</td>
+                <td data-label="Плюсы">Предельно просто; сила привязанности на уровне игрока; нет вопроса «на кого заходить»</td>
+                <td data-label="Минусы">Игрок «заперт» в роли; для другой роли нужен второй аккаунт → появляется мультиаккаунтинг</td>
+                <td data-label="Решение">Не берём</td>
               </tr>
               <tr>
-                <td><strong>2 персонажа базово</strong></td>
-                <td>Игрок закрывает две роли (фарм + поддержка/танк) без 4 часов в день; снимает часть мультиаккаунтинга; один общий склад</td>
-                <td>Нужно ограничить передачу ресурсов между персонажами, иначе это инструмент бота</td>
-                <td><strong>Базовый сценарий</strong></td>
+                <td data-label="Вариант"><strong>2 персонажа базово</strong></td>
+                <td data-label="Плюсы">Игрок закрывает две роли (фарм + поддержка/танк) без 4 часов в день; снимает часть мультиаккаунтинга; один общий склад</td>
+                <td data-label="Минусы">Нужно ограничить передачу ресурсов между персонажами, иначе это инструмент бота</td>
+                <td data-label="Решение"><strong>Базовый сценарий</strong></td>
               </tr>
               <tr>
-                <td>2 + расширение до 4</td>
-                <td>Монетизация без pay‑to‑win (слот не даёт силы); долгосрочная привязка</td>
-                <td>Больше слотов = больше мультибоксинга и «ферм»</td>
-                <td><strong>Расширение в V1</strong></td>
+                <td data-label="Вариант">2 + расширение до 4</td>
+                <td data-label="Плюсы">Монетизация без pay‑to‑win (слот не даёт силы); долгосрочная привязка</td>
+                <td data-label="Минусы">Больше слотов = больше мультибоксинга и «ферм»</td>
+                <td data-label="Решение"><strong>Расширение в V1</strong></td>
               </tr>
               <tr>
-                <td>4+ персонажей / без лимита</td>
-                <td>Максимум свободы</td>
-                <td>Экономика рушится: бесконечные фермы на одном аккаунте</td>
-                <td>Не берём</td>
+                <td data-label="Вариант">4+ персонажей / без лимита</td>
+                <td data-label="Плюсы">Максимум свободы</td>
+                <td data-label="Минусы">Экономика рушится: бесконечные фермы на одном аккаунте</td>
+                <td data-label="Решение">Не берём</td>
               </tr>
             </tbody>
           </table>
@@ -1247,6 +1633,7 @@
         </div>
 
         <h3>7.2 Что общее на аккаунте и что личное</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1258,19 +1645,19 @@
             </thead>
             <tbody>
               <tr>
-                <td>Аккаунт (глобально)</td>
-                <td>Логин, e‑mail, пароль/привязки, 2FA, локаль, страна, согласия, статусы и флаги, премиум‑валюта, косметика, достижения аккаунта, батлпасс, лимиты активности</td>
-                <td>Не влияет на силу; удобно иметь «один раз и навсегда»; выживает при переносе между серверами</td>
+                <td data-label="Уровень">Аккаунт (глобально)</td>
+                <td data-label="Что хранится">Логин, e‑mail, пароль/привязки, 2FA, локаль, страна, согласия, статусы и флаги, премиум‑валюта, косметика, достижения аккаунта, батлпасс, лимиты активности</td>
+                <td data-label="Почему так">Не влияет на силу; удобно иметь «один раз и навсегда»; выживает при переносе между серверами</td>
               </tr>
               <tr>
-                <td>Аккаунт + сервер</td>
-                <td>Общий склад (account bank), разблокировки рецептов, лимиты аукциона</td>
-                <td>Ограничивает паразитную перекачку ресурсов и сохраняет смысл серверной экономики</td>
+                <td data-label="Уровень">Аккаунт + сервер</td>
+                <td data-label="Что хранится">Общий склад (account bank), разблокировки рецептов, лимиты аукциона</td>
+                <td data-label="Почему так">Ограничивает паразитную перекачку ресурсов и сохраняет смысл серверной экономики</td>
               </tr>
               <tr>
-                <td>Персонаж</td>
-                <td>Имя, класс, уровень, характеристики, экипировка, инвентарь, квесты, позиция, гильдия, PvP‑карма, титулы, настройки хотбара</td>
-                <td>Всё, что даёт силу в бою, должно жить на персонаже — иначе появляется способ обойти риск</td>
+                <td data-label="Уровень">Персонаж</td>
+                <td data-label="Что хранится">Имя, класс, уровень, характеристики, экипировка, инвентарь, квесты, позиция, гильдия, PvP‑карма, титулы, настройки хотбара</td>
+                <td data-label="Почему так">Всё, что даёт силу в бою, должно жить на персонаже — иначе появляется способ обойти риск</td>
               </tr>
             </tbody>
           </table>
@@ -1341,6 +1728,7 @@
               <text x="500" y="446" text-anchor="middle" class="svg-text-dim">Сила персонажа — только из игры; платное живёт на аккаунте и силы не даёт</text>
             </svg>
           </div>
+          <div class="diagram-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>схема прокручивается вбок</div>
           <figcaption>Рис. 2. Модель данных: аккаунт, профиль, банк, персонажи и сервер.</figcaption>
         </figure>
 
@@ -1354,6 +1742,7 @@
         </ul>
 
         <h3>7.4 Анти‑мультибоксинг и мультиаккаунтинг</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1363,10 +1752,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>Фермы на бесплатных слотах</td><td>Ограничение оборота аккаунта‑новичка (первые 72 часа), проверка устройства</td></tr>
-              <tr><td>Один игрок — 5 аккаунтов для контроля рынка</td><td>Лимит одновременных сессий на устройство/IP, телеметрия поведения</td></tr>
-              <tr><td>Перекачка ресурсов</td><td>Банк внутри сервера, дневные лимиты, налоговая история сделок</td></tr>
-              <tr><td>Ботоводство</td><td>Убывающий дроп на одном споте, капча‑события в спорных зонах, ML‑детект паттернов</td></tr>
+              <tr><td data-label="Риск">Фермы на бесплатных слотах</td><td data-label="Механика ограничения">Ограничение оборота аккаунта‑новичка (первые 72 часа), проверка устройства</td></tr>
+              <tr><td data-label="Риск">Один игрок — 5 аккаунтов для контроля рынка</td><td data-label="Механика ограничения">Лимит одновременных сессий на устройство/IP, телеметрия поведения</td></tr>
+              <tr><td data-label="Риск">Перекачка ресурсов</td><td data-label="Механика ограничения">Банк внутри сервера, дневные лимиты, налоговая история сделок</td></tr>
+              <tr><td data-label="Риск">Ботоводство</td><td data-label="Механика ограничения">Убывающий дроп на одном споте, капча‑события в спорных зонах, ML‑детект паттернов</td></tr>
             </tbody>
           </table>
         </div>
@@ -1442,6 +1831,7 @@
               <text x="500" y="447" text-anchor="middle" class="svg-text-dim">почта OAuth‑провайдера уже в базе → запрос пароля · отказ от обязательных согласий → регистрация не завершается</text>
             </svg>
           </div>
+          <div class="diagram-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>схема прокручивается вбок</div>
           <figcaption>Рис. 3. Путь от экрана входа до персонажа в мире.</figcaption>
         </figure>
 
@@ -1456,6 +1846,7 @@
 
         <h3>8.2 Свойства аккаунта</h3>
         <p class="muted">Полный перечень полей. «Обязательное» — блокирует завершение регистрации; «по триггеру» — запрашивается позже.</p>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1467,33 +1858,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td><code>account_id</code></td><td>UUID v7</td><td>Обязательное</td><td>Внутренний идентификатор; никогда не показывается игроку</td></tr>
-              <tr><td><code>login</code></td><td>строка 3–24</td><td>Обязательное</td><td>Уникальный логин; не равен e‑mail, не отображается в мире</td></tr>
-              <tr><td><code>email</code></td><td>строка, нормализованная</td><td>Обязательное</td><td>Уникальный индекс; вход, восстановление, уведомления, торговля</td></tr>
-              <tr><td><code>email_verified</code></td><td>bool + timestamp</td><td>Обязательное</td><td>false до подтверждения; переводит аккаунт из limited в full</td></tr>
-              <tr><td><code>password_hash</code></td><td>argon2id</td><td>Обязательное*</td><td>Только для аккаунтов без внешнего провайдера; минимум 10 символов</td></tr>
-              <tr><td><code>auth_providers</code></td><td>список (steam/google/apple)</td><td>Обязательное</td><td>Храним provider_uid и признаки привязки; токены не храним</td></tr>
-              <tr><td><code>display_name</code></td><td>строка 2–20</td><td>Обязательное</td><td>Имя аккаунта для друзей и ленты, не для мира</td></tr>
-              <tr><td><code>birth_date_check</code></td><td>флаг + страна</td><td>Обязательное</td><td>Храним только факт проверки; возрастная политика зависит от региона</td></tr>
-              <tr><td><code>country / region</code></td><td>ISO‑код</td><td>Обязательное</td><td>Доступные серверы, платежи, правовые требования</td></tr>
-              <tr><td><code>locale / timezone</code></td><td>BCP‑47, IANA</td><td>Обязательное</td><td>Язык интерфейса, расписание событий и осад в локальном времени</td></tr>
-              <tr><td><code>status</code></td><td>limited / full / suspended / banned / deleted</td><td>Системное</td><td>Определяет доступные функции</td></tr>
-              <tr><td><code>role</code></td><td>player / moderator / support / admin</td><td>Системное</td><td>Права в игре и в поддержке</td></tr>
-              <tr><td><code>2fa</code></td><td>тип + секрет + резервные коды</td><td>По триггеру</td><td>Не даёт отобрать аккаунт, на котором лежит гильдия</td></tr>
-              <tr><td><code>consents</code></td><td>JSON (тип → версия → дата)</td><td>Обязательное</td><td>EULA и ПД обязательны; маркетинг — отдельно</td></tr>
-              <tr><td><code>premium_currency</code></td><td>целое</td><td>Системное</td><td>Общая на аккаунт, не торгуется</td></tr>
-              <tr><td><code>unlocked_character_slots</code></td><td>2–4</td><td>Системное</td><td>Базово 2, третий и четвёртый — платные разблокировки</td></tr>
-              <tr><td><code>premium_until</code></td><td>timestamp / null</td><td>Системное</td><td>Подписка «премиум» (удобство)</td></tr>
-              <tr><td><code>flags / risk_score</code></td><td>JSON</td><td>Системное</td><td>Мультиаккаунтинг, RMT‑риск, античит‑метки</td></tr>
-              <tr><td><code>session_policy</code></td><td>список устройств и сессий</td><td>Системное</td><td>Лимит одновременных сессий на устройство</td></tr>
-              <tr><td><code>created_at / updated_at / last_login_at</code></td><td>timestamp</td><td>Системное</td><td>Аналитика и удержание</td></tr>
-              <tr><td><code>deleted_at</code></td><td>timestamp / null</td><td>Системное</td><td>Мягкое удаление и 30‑дневное окно восстановления</td></tr>
+              <tr><td data-label="Поле"><code>account_id</code></td><td data-label="Тип">UUID v7</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">Внутренний идентификатор; никогда не показывается игроку</td></tr>
+              <tr><td data-label="Поле"><code>login</code></td><td data-label="Тип">строка 3–24</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">Уникальный логин; не равен e‑mail, не отображается в мире</td></tr>
+              <tr><td data-label="Поле"><code>email</code></td><td data-label="Тип">строка, нормализованная</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">Уникальный индекс; вход, восстановление, уведомления, торговля</td></tr>
+              <tr><td data-label="Поле"><code>email_verified</code></td><td data-label="Тип">bool + timestamp</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">false до подтверждения; переводит аккаунт из limited в full</td></tr>
+              <tr><td data-label="Поле"><code>password_hash</code></td><td data-label="Тип">argon2id</td><td data-label="Когда">Обязательное*</td><td data-label="Зачем нужно">Только для аккаунтов без внешнего провайдера; минимум 10 символов</td></tr>
+              <tr><td data-label="Поле"><code>auth_providers</code></td><td data-label="Тип">список (steam/google/apple)</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">Храним provider_uid и признаки привязки; токены не храним</td></tr>
+              <tr><td data-label="Поле"><code>display_name</code></td><td data-label="Тип">строка 2–20</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">Имя аккаунта для друзей и ленты, не для мира</td></tr>
+              <tr><td data-label="Поле"><code>birth_date_check</code></td><td data-label="Тип">флаг + страна</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">Храним только факт проверки; возрастная политика зависит от региона</td></tr>
+              <tr><td data-label="Поле"><code>country / region</code></td><td data-label="Тип">ISO‑код</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">Доступные серверы, платежи, правовые требования</td></tr>
+              <tr><td data-label="Поле"><code>locale / timezone</code></td><td data-label="Тип">BCP‑47, IANA</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">Язык интерфейса, расписание событий и осад в локальном времени</td></tr>
+              <tr><td data-label="Поле"><code>status</code></td><td data-label="Тип">limited / full / suspended / banned / deleted</td><td data-label="Когда">Системное</td><td data-label="Зачем нужно">Определяет доступные функции</td></tr>
+              <tr><td data-label="Поле"><code>role</code></td><td data-label="Тип">player / moderator / support / admin</td><td data-label="Когда">Системное</td><td data-label="Зачем нужно">Права в игре и в поддержке</td></tr>
+              <tr><td data-label="Поле"><code>2fa</code></td><td data-label="Тип">тип + секрет + резервные коды</td><td data-label="Когда">По триггеру</td><td data-label="Зачем нужно">Не даёт отобрать аккаунт, на котором лежит гильдия</td></tr>
+              <tr><td data-label="Поле"><code>consents</code></td><td data-label="Тип">JSON (тип → версия → дата)</td><td data-label="Когда">Обязательное</td><td data-label="Зачем нужно">EULA и ПД обязательны; маркетинг — отдельно</td></tr>
+              <tr><td data-label="Поле"><code>premium_currency</code></td><td data-label="Тип">целое</td><td data-label="Когда">Системное</td><td data-label="Зачем нужно">Общая на аккаунт, не торгуется</td></tr>
+              <tr><td data-label="Поле"><code>unlocked_character_slots</code></td><td data-label="Тип">2–4</td><td data-label="Когда">Системное</td><td data-label="Зачем нужно">Базово 2, третий и четвёртый — платные разблокировки</td></tr>
+              <tr><td data-label="Поле"><code>premium_until</code></td><td data-label="Тип">timestamp / null</td><td data-label="Когда">Системное</td><td data-label="Зачем нужно">Подписка «премиум» (удобство)</td></tr>
+              <tr><td data-label="Поле"><code>flags / risk_score</code></td><td data-label="Тип">JSON</td><td data-label="Когда">Системное</td><td data-label="Зачем нужно">Мультиаккаунтинг, RMT‑риск, античит‑метки</td></tr>
+              <tr><td data-label="Поле"><code>session_policy</code></td><td data-label="Тип">список устройств и сессий</td><td data-label="Когда">Системное</td><td data-label="Зачем нужно">Лимит одновременных сессий на устройство</td></tr>
+              <tr><td data-label="Поле"><code>created_at / updated_at / last_login_at</code></td><td data-label="Тип">timestamp</td><td data-label="Когда">Системное</td><td data-label="Зачем нужно">Аналитика и удержание</td></tr>
+              <tr><td data-label="Поле"><code>deleted_at</code></td><td data-label="Тип">timestamp / null</td><td data-label="Когда">Системное</td><td data-label="Зачем нужно">Мягкое удаление и 30‑дневное окно восстановления</td></tr>
             </tbody>
           </table>
         </div>
         <p class="muted" style="font-size: 0.85rem;">* <code>password_hash</code> не нужен, если игрок вошёл только через внешнего провайдера; при добавлении e‑mail позже — обязателен.</p>
 
         <h3>8.3 Свойства персонажа</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1504,25 +1896,26 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td><code>character_id</code></td><td>UUID</td><td>Первичный ключ, глобально уникальный</td></tr>
-              <tr><td><code>account_id</code></td><td>UUID</td><td>Владелец; каскадное удаление по правилу аккаунта</td></tr>
-              <tr><td><code>server_id</code></td><td>UUID</td><td>Сервер создания; смена — платная услуга с лимитом</td></tr>
-              <tr><td><code>slot_index</code></td><td>1–4</td><td>Уникален в паре (account_id, server_id)</td></tr>
-              <tr><td><code>name</code></td><td>2–16 символов</td><td>Уникален в рамках server_id, без учёта регистра</td></tr>
-              <tr><td><code>class / race / gender</code></td><td>справочники</td><td>Класс не меняется платно — только внутриигровым ритуалом</td></tr>
-              <tr><td><code>level / experience</code></td><td>int / bigint</td><td>Кап 60 в MVP; опыт не покупается</td></tr>
-              <tr><td><code>stats</code></td><td>JSON</td><td>База + бонусы; пересчитываются сервером, не клиентом</td></tr>
-              <tr><td><code>equipment / inventory</code></td><td>JSON или таблицы</td><td>Ссылки на экземпляры предметов с заточкой</td></tr>
-              <tr><td><code>position</code></td><td>зона + координаты</td><td>Нужна для корректного выхода из мира и осад</td></tr>
-              <tr><td><code>guild_id / guild_rank</code></td><td>UUID / enum</td><td>Принадлежность и права в гильдии</td></tr>
-              <tr><td><code>pvp_karma / bounty</code></td><td>int</td><td>Розыск и награда за голову</td></tr>
-              <tr><td><code>titles / achievements</code></td><td>список</td><td>Социальный капитал; часть общая с аккаунтом</td></tr>
-              <tr><td><code>playtime / last_played_at</code></td><td>int / timestamp</td><td>Отбор неактивных имён, аналитика</td></tr>
+              <tr><td data-label="Поле"><code>character_id</code></td><td data-label="Тип">UUID</td><td data-label="Правило">Первичный ключ, глобально уникальный</td></tr>
+              <tr><td data-label="Поле"><code>account_id</code></td><td data-label="Тип">UUID</td><td data-label="Правило">Владелец; каскадное удаление по правилу аккаунта</td></tr>
+              <tr><td data-label="Поле"><code>server_id</code></td><td data-label="Тип">UUID</td><td data-label="Правило">Сервер создания; смена — платная услуга с лимитом</td></tr>
+              <tr><td data-label="Поле"><code>slot_index</code></td><td data-label="Тип">1–4</td><td data-label="Правило">Уникален в паре (account_id, server_id)</td></tr>
+              <tr><td data-label="Поле"><code>name</code></td><td data-label="Тип">2–16 символов</td><td data-label="Правило">Уникален в рамках server_id, без учёта регистра</td></tr>
+              <tr><td data-label="Поле"><code>class / race / gender</code></td><td data-label="Тип">справочники</td><td data-label="Правило">Класс не меняется платно — только внутриигровым ритуалом</td></tr>
+              <tr><td data-label="Поле"><code>level / experience</code></td><td data-label="Тип">int / bigint</td><td data-label="Правило">Кап 60 в MVP; опыт не покупается</td></tr>
+              <tr><td data-label="Поле"><code>stats</code></td><td data-label="Тип">JSON</td><td data-label="Правило">База + бонусы; пересчитываются сервером, не клиентом</td></tr>
+              <tr><td data-label="Поле"><code>equipment / inventory</code></td><td data-label="Тип">JSON или таблицы</td><td data-label="Правило">Ссылки на экземпляры предметов с заточкой</td></tr>
+              <tr><td data-label="Поле"><code>position</code></td><td data-label="Тип">зона + координаты</td><td data-label="Правило">Нужна для корректного выхода из мира и осад</td></tr>
+              <tr><td data-label="Поле"><code>guild_id / guild_rank</code></td><td data-label="Тип">UUID / enum</td><td data-label="Правило">Принадлежность и права в гильдии</td></tr>
+              <tr><td data-label="Поле"><code>pvp_karma / bounty</code></td><td data-label="Тип">int</td><td data-label="Правило">Розыск и награда за голову</td></tr>
+              <tr><td data-label="Поле"><code>titles / achievements</code></td><td data-label="Тип">список</td><td data-label="Правило">Социальный капитал; часть общая с аккаунтом</td></tr>
+              <tr><td data-label="Поле"><code>playtime / last_played_at</code></td><td data-label="Тип">int / timestamp</td><td data-label="Правило">Отбор неактивных имён, аналитика</td></tr>
             </tbody>
           </table>
         </div>
 
         <h3>8.4 Правила и валидации</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1532,14 +1925,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>E‑mail уже занят</td><td>Предложить вход или привязку провайдера; не сообщать, к какому аккаунту привязан</td></tr>
-              <tr><td>Имя персонажа занято</td><td>Автосуффикс не предлагаем — игрок вводит новое (суффиксы ломают социальную ценность имени)</td></tr>
-              <tr><td>Вход через провайдера с почтой, которая уже в базе</td><td>Запросить пароль от существующего аккаунта, затем привязать провайдера</td></tr>
-              <tr><td>Возраст ниже порога региона</td><td>Блокировка регистрации или родительский контроль по правилам страны</td></tr>
-              <tr><td>Отказ от обязательных согласий</td><td>Регистрация не завершается, аккаунт не создаётся</td></tr>
-              <tr><td>Регион без доступных серверов</td><td>Регистрация возможна, игра — после выбора сервера; серверы с ограничением скрыты</td></tr>
-              <tr><td>Повторная регистрация с того же устройства</td><td>Разрешаем, но помечаем risk_score; влияет на лимиты торговли</td></tr>
-              <tr><td>Удаление аккаунта</td><td>Мягкое удаление, 30 дней на восстановление, затем анонимизация с сохранением агрегатов</td></tr>
+              <tr><td data-label="Правило">E‑mail уже занят</td><td data-label="Поведение системы">Предложить вход или привязку провайдера; не сообщать, к какому аккаунту привязан</td></tr>
+              <tr><td data-label="Правило">Имя персонажа занято</td><td data-label="Поведение системы">Автосуффикс не предлагаем — игрок вводит новое (суффиксы ломают социальную ценность имени)</td></tr>
+              <tr><td data-label="Правило">Вход через провайдера с почтой, которая уже в базе</td><td data-label="Поведение системы">Запросить пароль от существующего аккаунта, затем привязать провайдера</td></tr>
+              <tr><td data-label="Правило">Возраст ниже порога региона</td><td data-label="Поведение системы">Блокировка регистрации или родительский контроль по правилам страны</td></tr>
+              <tr><td data-label="Правило">Отказ от обязательных согласий</td><td data-label="Поведение системы">Регистрация не завершается, аккаунт не создаётся</td></tr>
+              <tr><td data-label="Правило">Регион без доступных серверов</td><td data-label="Поведение системы">Регистрация возможна, игра — после выбора сервера; серверы с ограничением скрыты</td></tr>
+              <tr><td data-label="Правило">Повторная регистрация с того же устройства</td><td data-label="Поведение системы">Разрешаем, но помечаем risk_score; влияет на лимиты торговли</td></tr>
+              <tr><td data-label="Правило">Удаление аккаунта</td><td data-label="Поведение системы">Мягкое удаление, 30 дней на восстановление, затем анонимизация с сохранением агрегатов</td></tr>
             </tbody>
           </table>
         </div>
@@ -1570,10 +1963,18 @@
         </ul>
 
         <h3>9.2 JSON‑контракт создания аккаунта</h3>
-<pre><code>POST /v1/auth/register
+        <div class="code-block">
+          <div class="code-head">
+            <span class="code-lang">HTTP / JSON</span>
+            <button class="copy-btn" type="button" data-copy>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H5.5A2.5 2.5 0 0 0 3 5.5v7A2.5 2.5 0 0 0 5.5 15"/></svg>
+              Скопировать
+            </button>
+          </div>
+          <pre><code>POST /v1/auth/register
 {
   "login": "fermer_perm",
-  "email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="69190508100c1b290c11080419050c470a0604">[email&#160;protected]</a>",
+  "email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="76061a170f130436130e171b061a135815191b">[email&#160;protected]</a>",
   "password": "**************",          // не хранится, только argon2id-хеш
   "display_name": "Фермер",
   "locale": "ru-RU",
@@ -1597,9 +1998,18 @@
   "unlocked_character_slots": 2,
   "next_step": "verify_email"
 }</code></pre>
+        </div>
 
         <h3>9.3 JSON‑контракт создания персонажа</h3>
-<pre><code>POST /v1/characters
+        <div class="code-block">
+          <div class="code-head">
+            <span class="code-lang">HTTP / JSON</span>
+            <button class="copy-btn" type="button" data-copy>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H5.5A2.5 2.5 0 0 0 3 5.5v7A2.5 2.5 0 0 0 5.5 15"/></svg>
+              Скопировать
+            </button>
+          </div>
+          <pre><code>POST /v1/characters
 {
   "account_id": "0192f0c4-…",
   "server_id": "eu-perm-01",
@@ -1612,9 +2022,18 @@
 // 409 Conflict — исчерпаны слоты или имя занято на сервере
 { "error": "CHARACTER_SLOTS_EXHAUSTED",
   "detail": { "unlocked": 2, "used": 2, "purchase_extra_slots": [3, 4] } }</code></pre>
+        </div>
 
         <h3>9.4 SQL‑каркас</h3>
-<pre><code>-- Аккаунты
+        <div class="code-block">
+          <div class="code-head">
+            <span class="code-lang">PostgreSQL</span>
+            <button class="copy-btn" type="button" data-copy>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H5.5A2.5 2.5 0 0 0 3 5.5v7A2.5 2.5 0 0 0 5.5 15"/></svg>
+              Скопировать
+            </button>
+          </div>
+          <pre><code>-- Аккаунты
 CREATE TABLE accounts (
   account_id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   login              citext UNIQUE NOT NULL,
@@ -1704,13 +2123,23 @@ CREATE TABLE sessions (
   expires_at  timestamptz NOT NULL,
   revoked_at  timestamptz
 );</code></pre>
+        </div>
 
         <h3>9.5 Индексы для производительности</h3>
-<pre><code>CREATE INDEX idx_characters_account ON characters(account_id) WHERE deleted_at IS NULL;
+        <div class="code-block">
+          <div class="code-head">
+            <span class="code-lang">PostgreSQL · индексы</span>
+            <button class="copy-btn" type="button" data-copy>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H5.5A2.5 2.5 0 0 0 3 5.5v7A2.5 2.5 0 0 0 5.5 15"/></svg>
+              Скопировать
+            </button>
+          </div>
+          <pre><code>CREATE INDEX idx_characters_account ON characters(account_id) WHERE deleted_at IS NULL;
 CREATE INDEX idx_characters_server ON characters(server_id, slot_index);
 CREATE INDEX idx_sessions_account ON sessions(account_id) WHERE revoked_at IS NULL;
 CREATE INDEX idx_identities_provider ON account_identities(provider, provider_uid);
 CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::text));</code></pre>
+        </div>
 
         <div class="info-box">
           <strong>Инварианты (проверяются в сервисе и в CI):</strong>
@@ -1722,6 +2151,7 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
         </div>
 
         <h3>9.6 События для аналитики и антифрода</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1732,13 +2162,13 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
               </tr>
             </thead>
             <tbody>
-              <tr><td><code>account.registered</code></td><td>provider, country, locale, device_fingerprint, referral</td><td>Воронка регистрации, источники трафика</td></tr>
-              <tr><td><code>account.verified</code></td><td>канал, время до верификации</td><td>Конверсия в full‑аккаунт</td></tr>
-              <tr><td><code>character.created</code></td><td>server_id, slot_index, class</td><td>Выбор классов и серверов, баланс</td></tr>
-              <tr><td><code>character.deleted</code></td><td>причина, время жизни</td><td>Причины ухода, антифрод</td></tr>
-              <tr><td><code>trade.completed</code></td><td>игрок, объём, класс предмета</td><td>RMT‑детект, инфляция</td></tr>
-              <tr><td><code>enchant.attempt</code></td><td>уровень, результат, страховка</td><td>Кривая риска, экономика стоков</td></tr>
-              <tr><td><code>session.started</code></td><td>устройство, IP‑хеш, длительность</td><td>Мультибоксинг, вовлечённость</td></tr>
+              <tr><td data-label="Событие"><code>account.registered</code></td><td data-label="Полезная нагрузка">provider, country, locale, device_fingerprint, referral</td><td data-label="Зачем">Воронка регистрации, источники трафика</td></tr>
+              <tr><td data-label="Событие"><code>account.verified</code></td><td data-label="Полезная нагрузка">канал, время до верификации</td><td data-label="Зачем">Конверсия в full‑аккаунт</td></tr>
+              <tr><td data-label="Событие"><code>character.created</code></td><td data-label="Полезная нагрузка">server_id, slot_index, class</td><td data-label="Зачем">Выбор классов и серверов, баланс</td></tr>
+              <tr><td data-label="Событие"><code>character.deleted</code></td><td data-label="Полезная нагрузка">причина, время жизни</td><td data-label="Зачем">Причины ухода, антифрод</td></tr>
+              <tr><td data-label="Событие"><code>trade.completed</code></td><td data-label="Полезная нагрузка">игрок, объём, класс предмета</td><td data-label="Зачем">RMT‑детект, инфляция</td></tr>
+              <tr><td data-label="Событие"><code>enchant.attempt</code></td><td data-label="Полезная нагрузка">уровень, результат, страховка</td><td data-label="Зачем">Кривая риска, экономика стоков</td></tr>
+              <tr><td data-label="Событие"><code>session.started</code></td><td data-label="Полезная нагрузка">устройство, IP‑хеш, длительность</td><td data-label="Зачем">Мультибоксинг, вовлечённость</td></tr>
             </tbody>
           </table>
         </div>
@@ -1766,6 +2196,7 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
         <h2>10. Сезоны, метрики и лайв‑операции</h2>
 
         <h3>10.1 Ритм контента</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1775,15 +2206,16 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
               </tr>
             </thead>
             <tbody>
-              <tr><td>День</td><td>Споты и боссы по расписанию, караваны между регионами</td></tr>
-              <tr><td>Неделя</td><td>Две осады, обновление контрактов гильдий, ротация зон с бонусным дропом</td></tr>
-              <tr><td>Месяц</td><td>Событие с сжиганием ресурсов (держит инфляцию), сезонная награда</td></tr>
-              <tr><td>Сезон (10–12 недель)</td><td>Сброс рейтингов, пересмотр территорий, новый слой контента и батлпасс</td></tr>
+              <tr><td data-label="Период">День</td><td data-label="Что происходит">Споты и боссы по расписанию, караваны между регионами</td></tr>
+              <tr><td data-label="Период">Неделя</td><td data-label="Что происходит">Две осады, обновление контрактов гильдий, ротация зон с бонусным дропом</td></tr>
+              <tr><td data-label="Период">Месяц</td><td data-label="Что происходит">Событие с сжиганием ресурсов (держит инфляцию), сезонная награда</td></tr>
+              <tr><td data-label="Период">Сезон (10–12 недель)</td><td data-label="Что происходит">Сброс рейтингов, пересмотр территорий, новый слой контента и батлпасс</td></tr>
             </tbody>
           </table>
         </div>
 
         <h3>10.2 Метрики</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1794,13 +2226,13 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
               </tr>
             </thead>
             <tbody>
-              <tr><td>D1 / D7 / D30 удержание</td><td>35% / 15% / 7%</td><td>Ориентир для core‑MMORPG без мобильных бенчмарков</td></tr>
-              <tr><td>Время до капа уровня</td><td>18–24 ч</td><td>Новичок доходит до меты за 2–3 недели, а не за 3 месяца</td></tr>
-              <tr><td>Доля игроков в гильдии к D14</td><td>≥ 55%</td><td>Гильдия — главный предиктор удержания</td></tr>
-              <tr><td>Оборот аукциона</td><td>растёт медленнее числа игроков</td><td>Индикатор инфляции</td></tr>
-              <tr><td>Регистрация → первый персонаж</td><td>≥ 85%</td><td>Качество флоу и трения на входе</td></tr>
-              <tr><td>Аккаунты с 2 персонажами</td><td>30–45%</td><td>Проверка гипотезы «2 персонажа нужны»</td></tr>
-              <tr><td>Платежи без влияния на силу</td><td>100%</td><td>Политика, проверяется ежемесячно</td></tr>
+              <tr><td data-label="Метрика">D1 / D7 / D30 удержание</td><td data-label="Цель">35% / 15% / 7%</td><td data-label="Комментарий">Ориентир для core‑MMORPG без мобильных бенчмарков</td></tr>
+              <tr><td data-label="Метрика">Время до капа уровня</td><td data-label="Цель">18–24 ч</td><td data-label="Комментарий">Новичок доходит до меты за 2–3 недели, а не за 3 месяца</td></tr>
+              <tr><td data-label="Метрика">Доля игроков в гильдии к D14</td><td data-label="Цель">≥ 55%</td><td data-label="Комментарий">Гильдия — главный предиктор удержания</td></tr>
+              <tr><td data-label="Метрика">Оборот аукциона</td><td data-label="Цель">растёт медленнее числа игроков</td><td data-label="Комментарий">Индикатор инфляции</td></tr>
+              <tr><td data-label="Метрика">Регистрация → первый персонаж</td><td data-label="Цель">≥ 85%</td><td data-label="Комментарий">Качество флоу и трения на входе</td></tr>
+              <tr><td data-label="Метрика">Аккаунты с 2 персонажами</td><td data-label="Цель">30–45%</td><td data-label="Комментарий">Проверка гипотезы «2 персонажа нужны»</td></tr>
+              <tr><td data-label="Метрика">Платежи без влияния на силу</td><td data-label="Цель">100%</td><td data-label="Комментарий">Политика, проверяется ежемесячно</td></tr>
             </tbody>
           </table>
         </div>
@@ -1819,6 +2251,7 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
       <!-- ============================ 11. ROADMAP ============================ -->
       <section id="roadmap">
         <h2>11. Roadmap MVP</h2>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1831,34 +2264,35 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
             </thead>
             <tbody>
               <tr>
-                <td>Прототип</td>
-                <td>0–4 мес.</td>
-                <td>Один регион, три класса, спот‑фарм, заточка, регистрация и 2 персонажа</td>
-                <td>Игрок играет 45 минут без падений и объяснений извне</td>
+                <td data-label="Этап">Прототип</td>
+                <td data-label="Срок">0–4 мес.</td>
+                <td data-label="Фичи">Один регион, три класса, спот‑фарм, заточка, регистрация и 2 персонажа</td>
+                <td data-label="Критерий выхода">Игрок играет 45 минут без падений и объяснений извне</td>
               </tr>
               <tr>
-                <td>Alpha (закрытая)</td>
-                <td>4–8 мес.</td>
-                <td>Гильдии, аукцион, PvP‑флаги, первые осады в упрощённом виде</td>
-                <td>D7 у теста ≥ 20%, экономика без взрывной инфляции</td>
+                <td data-label="Этап">Alpha (закрытая)</td>
+                <td data-label="Срок">4–8 мес.</td>
+                <td data-label="Фичи">Гильдии, аукцион, PvP‑флаги, первые осады в упрощённом виде</td>
+                <td data-label="Критерий выхода">D7 у теста ≥ 20%, экономика без взрывной инфляции</td>
               </tr>
               <tr>
-                <td>Beta</td>
-                <td>8–12 мес.</td>
-                <td>Сезон, батлпасс, античит, монетизация косметики</td>
-                <td>Платежи не влияют на силу (аудит), D30 ≥ 5%</td>
+                <td data-label="Этап">Beta</td>
+                <td data-label="Срок">8–12 мес.</td>
+                <td data-label="Фичи">Сезон, батлпасс, античит, монетизация косметики</td>
+                <td data-label="Критерий выхода">Платежи не влияют на силу (аудит), D30 ≥ 5%</td>
               </tr>
               <tr>
-                <td>Launch</td>
-                <td>12–15 мес.</td>
-                <td>Три сервера, полноценные осады, кросс‑события, мобильный компаньон</td>
-                <td>Стабильность 99.5%, готовность поддержки</td>
+                <td data-label="Этап">Launch</td>
+                <td data-label="Срок">12–15 мес.</td>
+                <td data-label="Фичи">Три сервера, полноценные осады, кросс‑события, мобильный компаньон</td>
+                <td data-label="Критерий выхода">Стабильность 99.5%, готовность поддержки</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h3>11.1 Риски</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1870,12 +2304,12 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
               </tr>
             </thead>
             <tbody>
-              <tr><td>Конфликт за споты отпугивает новичков</td><td>Высокая</td><td>Высокое</td><td>Защитные зоны до 20 уровня, карма, разведённые по времени окна войн</td></tr>
-              <tr><td>Экономическая инфляция и разрушение рынка</td><td>Средняя</td><td>Высокое</td><td>Стоки на заточку, динамический дроп, события‑сжигатели</td></tr>
-              <tr><td>Ботоводство и RMT</td><td>Высокая</td><td>Высокое</td><td>Лимиты новичков, телеметрия, ML‑детект, санкции по гильдиям</td></tr>
-              <tr><td>Мультиаккаунтинг вместо слотов</td><td>Средняя</td><td>Среднее</td><td>Ограничение сессий на устройство, риск‑скор, ценность общего склада</td></tr>
-              <tr><td>Осады не собирают людей</td><td>Средняя</td><td>Среднее</td><td>Расписание в прайм‑тайм региона, награды за участие, публичные логи</td></tr>
-              <tr><td>2 персонажа расфокусируют игрока</td><td>Средняя</td><td>Среднее</td><td>Общий банк и косметика, разные роли, а не дубли</td></tr>
+              <tr><td data-label="Риск">Конфликт за споты отпугивает новичков</td><td data-label="Вероятность">Высокая</td><td data-label="Влияние">Высокое</td><td data-label="Что делаем">Защитные зоны до 20 уровня, карма, разведённые по времени окна войн</td></tr>
+              <tr><td data-label="Риск">Экономическая инфляция и разрушение рынка</td><td data-label="Вероятность">Средняя</td><td data-label="Влияние">Высокое</td><td data-label="Что делаем">Стоки на заточку, динамический дроп, события‑сжигатели</td></tr>
+              <tr><td data-label="Риск">Ботоводство и RMT</td><td data-label="Вероятность">Высокая</td><td data-label="Влияние">Высокое</td><td data-label="Что делаем">Лимиты новичков, телеметрия, ML‑детект, санкции по гильдиям</td></tr>
+              <tr><td data-label="Риск">Мультиаккаунтинг вместо слотов</td><td data-label="Вероятность">Средняя</td><td data-label="Влияние">Среднее</td><td data-label="Что делаем">Ограничение сессий на устройство, риск‑скор, ценность общего склада</td></tr>
+              <tr><td data-label="Риск">Осады не собирают людей</td><td data-label="Вероятность">Средняя</td><td data-label="Влияние">Среднее</td><td data-label="Что делаем">Расписание в прайм‑тайм региона, награды за участие, публичные логи</td></tr>
+              <tr><td data-label="Риск">2 персонажа расфокусируют игрока</td><td data-label="Вероятность">Средняя</td><td data-label="Влияние">Среднее</td><td data-label="Что делаем">Общий банк и косметика, разные роли, а не дубли</td></tr>
             </tbody>
           </table>
         </div>
@@ -1886,6 +2320,7 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
         <h2>Приложения</h2>
 
         <h3>A. Глоссарий</h3>
+                <div class="table-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16"/><path d="M8 4v16"/></svg>таблица прокручивается вбок</div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -1895,14 +2330,14 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
               </tr>
             </thead>
             <tbody>
-              <tr><td>Спот</td><td>Ограниченная зона с мобами и элитным держателем; основной источник редкого ресурса</td></tr>
-              <tr><td>Флаг PvP</td><td>Состояние, при котором игрок может быть атакован и атаковать в спорной зоне</td></tr>
-              <tr><td>Карма / розыск</td><td>Накопленное наказание за нападения на мирных игроков; влияет на потери при смерти</td></tr>
-              <tr><td>Страховка</td><td>Предмет, ограничивающий потерю при неудачной заточке; не продаётся за деньги</td></tr>
-              <tr><td>Караван</td><td>Перевозка ресурсов между регионами; может быть ограблен</td></tr>
-              <tr><td>Слот персонажа</td><td>Разрешённое количество персонажей на аккаунт (2 базово, до 4)</td></tr>
-              <tr><td>Account bank</td><td>Общий склад персонажей одного аккаунта в пределах сервера</td></tr>
-              <tr><td>Limited‑аккаунт</td><td>Аккаунт без подтверждённого e‑mail: играть можно, торговать нельзя</td></tr>
+              <tr><td data-label="Термин">Спот</td><td data-label="Значение">Ограниченная зона с мобами и элитным держателем; основной источник редкого ресурса</td></tr>
+              <tr><td data-label="Термин">Флаг PvP</td><td data-label="Значение">Состояние, при котором игрок может быть атакован и атаковать в спорной зоне</td></tr>
+              <tr><td data-label="Термин">Карма / розыск</td><td data-label="Значение">Накопленное наказание за нападения на мирных игроков; влияет на потери при смерти</td></tr>
+              <tr><td data-label="Термин">Страховка</td><td data-label="Значение">Предмет, ограничивающий потерю при неудачной заточке; не продаётся за деньги</td></tr>
+              <tr><td data-label="Термин">Караван</td><td data-label="Значение">Перевозка ресурсов между регионами; может быть ограблен</td></tr>
+              <tr><td data-label="Термин">Слот персонажа</td><td data-label="Значение">Разрешённое количество персонажей на аккаунт (2 базово, до 4)</td></tr>
+              <tr><td data-label="Термин">Account bank</td><td data-label="Значение">Общий склад персонажей одного аккаунта в пределах сервера</td></tr>
+              <tr><td data-label="Термин">Limited‑аккаунт</td><td data-label="Значение">Аккаунт без подтверждённого e‑mail: играть можно, торговать нельзя</td></tr>
             </tbody>
           </table>
         </div>
@@ -2092,20 +2527,158 @@ CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::
         window.addEventListener("resize", activate);
         activate();
 
+        /* ---------------- Esc закрывает меню, Hash при загрузке ---------------- */
+        window.addEventListener("load", function () {
+          if (location.hash && document.querySelector(location.hash)) {
+            setTimeout(function () { goTo(location.hash); }, 60);
+          }
+        });
+
         /* ---------------- Клик по пункту меню ---------------- */
-        links.forEach(function (link) {
-          link.addEventListener("click", function (e) {
-            var target = document.querySelector(link.getAttribute("href"));
-            if (!target) return;
-            e.preventDefault();
-            hideTip();
-            if (mqMobile.matches) closeDrawer();
-            var y = target.getBoundingClientRect().top + window.scrollY - 12;
-            window.scrollTo({ top: y, behavior: "smooth" });
-            history.replaceState(null, "", link.getAttribute("href"));
+        /* ---------------- Копирование кода ---------------- */
+        Array.prototype.slice.call(document.querySelectorAll("[data-copy]")).forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var block = btn.closest(".code-block");
+            var code = block ? block.querySelector("code") : null;
+            if (!code) return;
+            var text = code.innerText;
+            var done = function () {
+              btn.classList.add("done");
+              btn.innerHTML = "✓ Скопировано";
+              setTimeout(function () {
+                btn.classList.remove("done");
+                btn.innerHTML =
+                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H5.5A2.5 2.5 0 0 0 3 5.5v7A2.5 2.5 0 0 0 5.5 15"/></svg>Скопировать';
+              }, 1600);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done).catch(fallback);
+            } else {
+              fallback();
+            }
+            function fallback() {
+              var ta = document.createElement("textarea");
+              ta.value = text;
+              ta.setAttribute("readonly", "");
+              ta.style.position = "fixed";
+              ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.select();
+              try { document.execCommand("copy"); done(); } catch (e) {}
+              document.body.removeChild(ta);
+            }
           });
         });
+
+        /* ---------------- Прогресс чтения и кнопка «наверх» ---------------- */
+        var bar = document.getElementById("readBar");
+        var toTop = document.getElementById("toTop");
+
+        function onScroll() {
+          var h = document.documentElement;
+          var max = h.scrollHeight - h.clientHeight;
+          var pct = max > 0 ? (h.scrollTop || document.body.scrollTop) / max : 0;
+          if (bar) bar.style.width = (pct * 100).toFixed(2) + "%";
+          if (toTop) toTop.classList.toggle("show", (h.scrollTop || document.body.scrollTop) > 600);
+        }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll);
+        onScroll();
+
+        if (toTop) {
+          toTop.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          });
+        }
+
+        /* ---------------- Универсальный переход к разделу ---------------- */
+        var jumpSelect = document.getElementById("jumpSelect");
+        var prevBtn = document.getElementById("prevSection");
+        var nextBtn = document.getElementById("nextSection");
+
+        var navIdx = 0;
+        var lockUntil = 0;
+
+        function currentIndex() {
+          var pos = window.scrollY + window.innerHeight * 0.3;
+          var idx = 0;
+          sections.forEach(function (s, i) { if (s.el.offsetTop <= pos) idx = i; });
+          return idx;
+        }
+
+        function indexOfHash(hash) {
+          for (var i = 0; i < sections.length; i++) {
+            if ("#" + sections[i].el.id === hash) return i;
+          }
+          return -1;
+        }
+
+        function lock() { lockUntil = Date.now() + 1100; }
+
+        function goTo(hash) {
+          var target = document.querySelector(hash);
+          if (!target) return;
+          hideTip();
+          if (mqMobile.matches) closeDrawer();
+
+          var idx = indexOfHash(hash);
+          if (idx >= 0) navIdx = idx;
+
+          var offset = mqMobile.matches ? 64 : 12;
+          var y = target.getBoundingClientRect().top + window.scrollY - offset;
+          var distance = Math.abs(y - window.scrollY);
+          lock();
+          window.scrollTo({ top: y, behavior: distance > 2400 ? "auto" : "smooth" });
+          history.replaceState(null, "", hash);
+          if (jumpSelect) jumpSelect.value = hash;
+          paintPager();
+        }
+
+        function paintPager() {
+          if (prevBtn) prevBtn.disabled = navIdx <= 0;
+          if (nextBtn) nextBtn.disabled = navIdx >= sections.length - 1;
+          if (jumpSelect && sections[navIdx]) jumpSelect.value = "#" + sections[navIdx].el.id;
+        }
+
+        links.forEach(function (link) {
+          link.addEventListener("click", function (e) {
+            if (!document.querySelector(link.getAttribute("href"))) return;
+            e.preventDefault();
+            goTo(link.getAttribute("href"));
+          });
+        });
+
+        if (jumpSelect) {
+          jumpSelect.addEventListener("change", function () {
+            if (!jumpSelect.value) return;
+            goTo(jumpSelect.value);
+            jumpSelect.blur();
+          });
+        }
+
+        function step(delta) {
+          var idx = (Date.now() < lockUntil ? navIdx : currentIndex()) + delta;
+          if (idx < 0 || idx >= sections.length) return;
+          goTo("#" + sections[idx].el.id);
+        }
+
+        if (prevBtn) prevBtn.addEventListener("click", function () { step(-1); });
+        if (nextBtn) nextBtn.addEventListener("click", function () { step(1); });
+
+        function syncNav() {
+          if (Date.now() < lockUntil) return;   // не перебиваем программный переход
+          navIdx = currentIndex();
+          paintPager();
+        }
+
+        if ("onscrollend" in window) {
+          window.addEventListener("scrollend", function () { lockUntil = 0; syncNav(); });
+        }
+
+        window.addEventListener("scroll", syncNav, { passive: true });
+        window.addEventListener("resize", syncNav);
+        syncNav();
       })();
     </script>
-  <script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a522e646fac28dc3',t:'MTc5MzI4NDQ1MA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a522e646fac28dc3',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a523274fea5af45d',t:'MTc5MzI4NzExNA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a523274fea5af45d',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
