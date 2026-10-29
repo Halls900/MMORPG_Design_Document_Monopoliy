@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Дизайн‑документ: R4Online: Demons — MMORPG в духе R2Online</title>
+    <style>
+      :root {
+        --bg-dark: #0b0c12;
+        --bg-panel: #14161f;
+        --text-main: #ffffff;
+        --text-muted: #a1a5b1;
+        --accent-1: #ff4d4d;
+        --accent-2: #ff9f1c;
+        --accent-3: #c0bfff;
+        --border: #2a2e3a;
+        --code-bg: #0f111a;
+        --code-text: #e5e7eb;
+        --nav-width: 280px;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar Navigation */
+      .sidebar {
+        width: var(--nav-width);
+        background: var(--bg-panel);
+        border-right: 1px solid var(--border);
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: width 0.22s ease, padding 0.22s ease;
+        z-index: 40;
+      }
+
+      .sidebar-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+
+      .logo {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text-main);
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .logo span { color: var(--accent-3); }
+
+      .icon-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      }
+      .icon-btn:hover {
+        color: var(--text-main);
+        border-color: var(--accent-3);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .icon-btn:focus-visible {
+        outline: 2px solid var(--accent-3);
+        outline-offset: 2px;
+      }
+      .icon-btn svg { width: 16px; height: 16px; }
+      .icon-btn .ico-expand { display: none; }
+
+      .nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .nav-list li { margin-bottom: 0.15rem; }
+
+      .nav-list a {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.6rem 0.7rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .nav-list a:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-main);
+      }
+
+      /* Active state matches the red button color from reference */
+      .nav-list a.active {
+        background: var(--accent-1);
+        color: #fff;
+      }
+
+      .nav-ico {
+        width: 17px;
+        height: 17px;
+        flex-shrink: 0;
+        opacity: 0.85;
+      }
+      .nav-list a.active .nav-ico { opacity: 1; }
+
+      .nav-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+
+      .nav-num {
+        font-size: 0.62rem;
+        font-family: ui-monospace, Menlo, monospace;
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0 0.25rem;
+        line-height: 1.5;
+        flex-shrink: 0;
+      }
+      .nav-list a.active .nav-num {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      .sidebar-meta {
+        margin-top: auto;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        border-top: 1px solid var(--border);
+        padding-top: 1rem;
+        line-height: 1.5;
+      }
+      .sidebar-meta b { color: var(--text-main); font-weight: 600; }
+
+      /* ---------- Свёрнутый режим ---------- */
+      .sidebar.collapsed {
+        width: 76px;
+        padding: 1.5rem 0.6rem;
+        overflow: visible;
+      }
+      .sidebar.collapsed .logo,
+      .sidebar.collapsed .nav-label,
+      .sidebar.collapsed .nav-num,
+      .sidebar.collapsed .sidebar-meta { display: none; }
+      .sidebar.collapsed .sidebar-head { justify-content: center; }
+      .sidebar.collapsed .icon-btn .ico-collapse { display: none; }
+      .sidebar.collapsed .icon-btn .ico-expand { display: block; }
+      .sidebar.collapsed .nav-list a {
+        justify-content: center;
+        padding: 0.6rem 0;
+      }
+      .sidebar.collapsed .nav-ico { width: 19px; height: 19px; }
+
+      /* ---------- Подсказки ---------- */
+      .tip {
+        position: fixed;
+        z-index: 90;
+        top: 0;
+        left: 0;
+        max-width: 310px;
+        background: #191c26;
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent-2);
+        border-radius: 8px;
+        padding: 0.65rem 0.8rem;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+        pointer-events: none;
+        opacity: 0;
+        transform: translateY(4px);
+        transition: opacity 0.14s ease, transform 0.14s ease;
+      }
+      .tip.show { opacity: 1; transform: translateY(0); }
+      .tip-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.2rem;
+        letter-spacing: 0.02em;
+      }
+      .tip-desc {
+        font-size: 0.76rem;
+        color: var(--text-muted);
+        line-height: 1.45;
+        margin-bottom: 0.45rem;
+      }
+      .tip-go {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.7rem;
+        font-family: ui-monospace, Menlo, monospace;
+        color: var(--accent-3);
+        border-top: 1px solid var(--border);
+        padding-top: 0.4rem;
+      }
+      .tip-go svg { width: 12px; height: 12px; flex-shrink: 0; }
+      .tip-go span.loc { color: var(--accent-2); }
+
+      /* ---------- Всплывающая кнопка для мобильных ---------- */
+      .nav-toggle {
+        position: fixed;
+        top: 0.9rem;
+        left: 0.9rem;
+        z-index: 60;
+        display: none;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--bg-panel);
+        color: var(--text-main);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+      }
+      .nav-toggle svg { width: 16px; height: 16px; }
+      .nav-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 45;
+        display: none;
+      }
+
+      /* Main Content Area */
+      .content-wrapper {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+        max-width: 100%;
+      }
+
+      /* Hero Section (Header only, no buttons) */
+      .hero-header {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .tagline {
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        color: var(--accent-3);
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+      }
+
+      .hero-header h1 {
+        font-size: 3.5rem;
+        line-height: 1.1;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(to bottom, #fff, #aaa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero-header p {
+        color: var(--text-muted);
+        max-width: 80%;
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+      }
+      .badge {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+        background: var(--bg-panel);
+        border-radius: 999px;
+        padding: 0.3rem 0.7rem;
+      }
+      .badge.accent { color: var(--accent-2); border-color: rgba(255, 159, 28, 0.35); }
+      .badge.violet { color: var(--accent-3); border-color: rgba(192, 191, 255, 0.35); }
+
+      /* Typography & Layout */
+      h2 {
+        color: var(--text-main);
+        font-size: 1.75rem;
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--accent-2);
+        padding-left: 1rem;
+        scroll-margin-top: 1rem;
+      }
+
+      h3 {
+        color: var(--text-main);
+        font-size: 1.15rem;
+        margin-top: 2rem;
+        margin-bottom: 0.8rem;
+      }
+
+      p { margin-bottom: 1rem; color: var(--text-main); }
+      ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+      li { margin-bottom: 0.5rem; color: var(--text-main); }
+      li > ul, li > ol { margin-top: 0.5rem; }
+
+      .muted { color: var(--text-muted); }
+      strong { color: #fff; }
+
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        font-size: 0.88rem;
+        color: var(--text-main);
+      }
+      th, td {
+        border: 1px solid var(--border);
+        padding: 0.7rem 0.9rem;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background-color: var(--bg-panel);
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+      }
+      tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+      td code { color: var(--accent-3); font-size: 0.85em; }
+
+      .table-scroll { overflow-x: auto; }
+
+      /* Code blocks */
+      pre {
+        background-color: var(--code-bg);
+        color: var(--code-text);
+        padding: 1.2rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 1.2rem 0;
+        font-size: 0.82rem;
+        border: 1px solid var(--border);
+        line-height: 1.55;
+      }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+
+      /* Feature grid */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .feature-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem;
+      }
+      .feature-card strong { color: var(--accent-3); }
+
+      /* Callouts */
+      .warning-box {
+        background: rgba(255, 77, 77, 0.08);
+        border-left: 4px solid var(--accent-1);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .info-box {
+        background: rgba(192, 191, 255, 0.07);
+        border-left: 4px solid var(--accent-3);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .gold-box {
+        background: rgba(255, 159, 28, 0.08);
+        border-left: 4px solid var(--accent-2);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .warning-box strong, .info-box strong, .gold-box strong { display: inline-block; margin-bottom: 0.35rem; }
+
+      /* Diagrams */
+      .diagram {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem 0.5rem;
+        margin: 1.5rem 0 0.5rem;
+        overflow-x: auto;
+      }
+      .diagram svg { display: block; width: 100%; height: auto; min-width: 620px; }
+      figcaption {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        margin-bottom: 1.5rem;
+      }
+      .svg-box { fill: #14161f; stroke: #2a2e3a; stroke-width: 1; }
+      .svg-box-accent { fill: rgba(255, 159, 28, 0.1); stroke: #ff9f1c; stroke-width: 1; }
+      .svg-box-violet { fill: rgba(192, 191, 255, 0.08); stroke: #c0bfff; stroke-width: 1; }
+      .svg-text { fill: #ffffff; font-family: inherit; font-size: 12px; }
+      .svg-text-dim { fill: #a1a5b1; font-family: inherit; font-size: 11px; }
+      .svg-text-mono { fill: #ffffff; font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; }
+      .svg-line { stroke: #a1a5b1; stroke-width: 1.2; fill: none; }
+      .svg-label-red { fill: #ff4d4d; font-family: inherit; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; }
+      .svg-label-orange { fill: #ff9f1c; font-family: inherit; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; }
+      .svg-label-violet { fill: #c0bfff; font-family: inherit; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; }
+
+      .checklist { list-style: none; padding-left: 0; }
+      .checklist li { padding-left: 1.75rem; position: relative; }
+      .checklist li::before {
+        content: "☐";
+        position: absolute;
+        left: 0.25rem;
+        color: var(--accent-2);
+        font-size: 1rem;
+      }
+
+      .footer-note {
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      @media (max-width: 900px) {
+        .nav-toggle { display: inline-flex; }
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100vh;
+          width: min(86vw, 320px);
+          border-right: 1px solid var(--border);
+          border-bottom: none;
+          padding: 1.25rem 1rem;
+          gap: 1.1rem;
+          transform: translateX(-102%);
+          transition: transform 0.24s ease;
+          box-shadow: 12px 0 40px rgba(0, 0, 0, 0.5);
+        }
+        body.nav-open .sidebar { transform: translateX(0); }
+        body.nav-open .nav-backdrop { display: block; }
+        body.nav-open .nav-toggle { display: none; }
+        .sidebar.collapsed { width: min(86vw, 320px); padding: 1.25rem 1rem; }
+        .sidebar.collapsed .logo,
+        .sidebar.collapsed .nav-label,
+        .sidebar.collapsed .nav-num { display: inline; }
+        .sidebar.collapsed .nav-list a { justify-content: flex-start; padding: 0.6rem 0.7rem; }
+        .sidebar.collapsed .sidebar-head { justify-content: space-between; }
+        .sidebar.collapsed .icon-btn .ico-collapse { display: block; }
+        .sidebar.collapsed .icon-btn .ico-expand { display: none; }
+        .nav-list a { font-size: 0.82rem; padding: 0.65rem 0.7rem; }
+        .sidebar-meta { display: block; font-size: 0.72rem; }
+        .content-wrapper { padding: 4.4rem 1rem 1rem; width: 100%; }
+        .hero-header h1 { font-size: 2.4rem; }
+        .hero-header p { max-width: 100%; }
+        h2 { font-size: 1.35rem; margin-top: 2rem; }
+        pre { font-size: 0.72rem; padding: 0.9rem; }
+        .tip { max-width: 260px; }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="nav-toggle" id="navToggle" aria-controls="sidebar" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+      Разделы
+    </button>
+    <div class="nav-backdrop" id="navBackdrop" hidden></div>
+
+    <!-- Left Vertical Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <div class="logo">
+          <span>R4</span>Online
+        </div>
+        <button class="icon-btn" id="collapseToggle" type="button"
+                aria-controls="sidebar" aria-expanded="true"
+                data-tip-title="Свернуть меню"
+                data-tip-desc="Панель сожмётся до иконок, а текст останется в подсказках при наведении. Состояние запоминается."
+                data-tip-target="Клавиша: Shift + C">
+          <svg class="ico-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 6 9 12l6 6"/>
+          </svg>
+          <svg class="ico-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 6l6 6-6 6"/>
+          </svg>
+          <span class="sr-only">Свернуть или развернуть меню</span>
+        </button>
+      </div>
+      <nav aria-label="Навигация по документу">
+        <ul class="nav-list">
+          <li>
+            <a href="#concept" class="active"
+               data-tip-title="1. Концепция и Elevator Pitch"
+               data-tip-desc="Зачем нужна игра: питч, три горизон­та развития и ставка на конфликт за ресурс."
+               data-tip-target="Раздел 1 · начало документа">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"/><path d="m15.5 8.5-2.2 5.3-5.3 2.2 2.2-5.3 5.3-2.2Z"/></svg>
+              <span class="nav-label">Об игре</span>
+              <span class="nav-num">1</span>
+            </a>
+          </li>
+          <li>
+            <a href="#audience"
+               data-tip-title="2. Целевая аудитория"
+               data-tip-desc="Пять сегментов игроков и таблица: что берём у R2 и что меняем."
+               data-tip-target="Раздел 2 · две таблицы">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V20"/><circle cx="9.5" cy="7.5" r="3.2"/><path d="M17 4.2a3.2 3.2 0 0 1 0 6.2"/><path d="M21 20v-1.5a4 4 0 0 0-3-3.8"/></svg>
+              <span class="nav-label">Аудитория</span>
+              <span class="nav-num">2</span>
+            </a>
+          </li>
+          <li>
+            <a href="#principles"
+               data-tip-title="3. Дизайн-принципы"
+               data-tip-desc="Пять принципов и анти-цели: что мы сознательно не делаем."
+               data-tip-target="Раздел 3 · карточки и предупреждение">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.2 2.9 7.7 7 9.5 4.1-1.8 7-5.3 7-9.5V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+              <span class="nav-label">Принципы</span>
+              <span class="nav-num">3</span>
+            </a>
+          </li>
+          <li>
+            <a href="#core-loop"
+               data-tip-title="4. Core Loop"
+               data-tip-desc="Три вложенные петли: микро, сессия, мета — со схемой."
+               data-tip-target="Раздел 4 · иллюстрация «Три петли»">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 0 1 14.5-6"/><path d="M18 3.5V8h-4.5"/><path d="M20.5 12a8.5 8.5 0 0 1-14.5 6"/><path d="M6 20.5V16h4.5"/></svg>
+              <span class="nav-label">Core Loop</span>
+              <span class="nav-num">4</span>
+            </a>
+          </li>
+          <li>
+            <a href="#mechanics"
+               data-tip-title="5. Механики"
+               data-tip-desc="Мир и споты, заточка +1…+15, PvP и карма, гильдии, крафт, осады, баланс MVP."
+               data-tip-target="Раздел 5 · 8 подразделов">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="18" r="2"/></svg>
+              <span class="nav-label">Механики</span>
+              <span class="nav-num">5</span>
+            </a>
+          </li>
+          <li>
+            <a href="#economy"
+               data-tip-title="6. Экономика и монетизация"
+               data-tip-desc="Источники и стоки, что продаём и что не продаём никогда, анти-RMT."
+               data-tip-target="Раздел 6 · таблицы и предупреждение">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>
+              <span class="nav-label">Экономика</span>
+              <span class="nav-num">6</span>
+            </a>
+          </li>
+          <li>
+            <a href="#account"
+               data-tip-title="7. Аккаунт и персонажи"
+               data-tip-desc="Почему 1 аккаунт = 2 персонажа, что общее и что личное, анти-мультибоксинг."
+               data-tip-target="Раздел 7 · схема модели данных">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg>
+              <span class="nav-label">Аккаунт</span>
+              <span class="nav-num">7</span>
+            </a>
+          </li>
+          <li>
+            <a href="#registration"
+               data-tip-title="8. Регистрация"
+               data-tip-desc="Флоу из 7 шагов, свойства аккаунта и персонажа, правила валидаций."
+               data-tip-target="Раздел 8 · большая таблица свойств">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9.5" cy="8" r="3.4"/><path d="M3 20.5a6.5 6.5 0 0 1 12 0"/><path d="M18.5 8v6"/><path d="M15.5 11h6"/></svg>
+              <span class="nav-label">Регистрация</span>
+              <span class="nav-num">8</span>
+            </a>
+          </li>
+          <li>
+            <a href="#db-architecture"
+               data-tip-title="9. Архитектура данных"
+               data-tip-desc="SQL-каркас PostgreSQL, JSON-контракты, индексы, инварианты, события."
+               data-tip-target="Раздел 9 · блоки кода и API">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="7" ry="3"/><path d="M5 5.5v13c0 1.7 3.1 3 7 3s7-1.3 7-3v-13"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg>
+              <span class="nav-label">Архитектура БД</span>
+              <span class="nav-num">9</span>
+            </a>
+          </li>
+          <li>
+            <a href="#metrics"
+               data-tip-title="10. Сезоны и метрики"
+               data-tip-desc="Ритм контента, D1/D7/D30, инфляция, технические и правовые требования."
+               data-tip-target="Раздел 10 · таблицы метрик">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>
+              <span class="nav-label">Метрики</span>
+              <span class="nav-num">10</span>
+            </a>
+          </li>
+          <li>
+            <a href="#roadmap"
+               data-tip-title="11. Roadmap MVP"
+               data-tip-desc="Прототип → Alpha → Beta → Launch с критериями выхода и таблица рисков."
+               data-tip-target="Раздел 11 · план и риски">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5c2.5-1.6 5-1.6 7.5 0s5 1.6 7.5 0V18c-2.5 1.6-5 1.6-7.5 0s-5-1.6-7.5 0V5.5Z"/><path d="M8.5 5v13"/><path d="M15 5.6v13"/></svg>
+              <span class="nav-label">Roadmap</span>
+              <span class="nav-num">11</span>
+            </a>
+          </li>
+          <li>
+            <a href="#appendix"
+               data-tip-title="Приложения A–C"
+               data-tip-desc="Глоссарий, открытые вопросы и чек-лист решения по аккаунту."
+               data-tip-target="Конец документа">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2 2 0 0 1 6 2.5h6v19H6a2 2 0 0 1-2-2v-15Z"/><path d="M12 2.5h6a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2h-6"/><path d="M8 7h2"/><path d="M8 11h2"/></svg>
+              <span class="nav-label">Приложения</span>
+              <span class="nav-num">A</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="sidebar-meta">
+        <b>GDD v0.9</b><br />
+        29.10.2026 · рабочий черновик<br />
+        Референс-класс: R2Online / R2Farming
+      </div>
+    </aside>
+
+    <div class="tip" id="tip" role="tooltip" aria-hidden="true">
+      <div class="tip-title" id="tipTitle"></div>
+      <div class="tip-desc" id="tipDesc"></div>
+      <div class="tip-go">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17 17 7"/><path d="M9 7h8v8"/>
+        </svg>
+        <span class="loc" id="tipTarget"></span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="content-wrapper">
+      <header class="hero-header">
+        <div class="tagline">R4ONLINE — DEMONS · GAME DESIGN DOCUMENT</div>
+        <h1>R4<br />DEMONS</h1>
+        <p>MMORPG с открытым PvP и экономикой дефицита. Мир не выдаёт ресурсы — он назначает за них цену: каждый хороший спот фарма кто-то уже занял, и договориться или отобрать — и есть игра.</p>
+        <div class="hero-meta">
+          <span class="badge accent">Версия 0.9 · черновик</span>
+          <span class="badge">PC (Steam / лончер)</span>
+          <span class="badge">F2P + косметика</span>
+          <span class="badge violet">1 аккаунт = 2 персонажа</span>
+        </div>
+      </header>
+
+      <!-- ============================ 1. КОНЦЕПЦИЯ ============================ -->
+      <section id="concept">
+        <h2>1. Концепция и Elevator Pitch</h2>
+        <p>R4: Demons — это онлайн‑MMORPG в духе R2Online / R2Farming: открытый мир, фарм‑споты как спорный ресурс, заточка предметов с риском разрушения, войны гильдий и осады замков. Игрок приходит за знакомым чувством — моб, дроп, «+10 или сломается» — а остаётся потому, что его персонаж становится значимым: его держат за спот, его зовут в гильдию, его альянс решает, кому в этом месяце доступен редкий ресурс.</p>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <strong>Стиль геймплея:</strong><br />
+            Открытый мир, фарм‑сессии по 45–90 минут, PvP за территорию, минимум обязательного микроконтроля.
+          </div>
+          <div class="feature-card">
+            <strong>Уникальная фишка:</strong><br />
+            Спот не принадлежит системе — он принадлежит тому, кто его удержал. Плюс заточка с реальной потерей предмета.
+          </div>
+          <div class="feature-card">
+            <strong>Экономика:</strong><br />
+            Дефицит ресурса как основной ограничитель прогрессии. Никакой силы за деньги — только за игру.
+          </div>
+        </div>
+
+        <div class="gold-box">
+          <strong>Питч одной строкой:</strong><br />
+          R4: Demons — MMORPG, где мир не выдаёт тебе ресурсы, а назначает цену за них: каждый хороший спот кто-то уже занял.
+        </div>
+
+        <h3>Как это видится в будущем — три горизонта</h3>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <strong>Горизонт 1 · запуск (0–12 мес.) — мир как спорная территория</strong>
+            <ul style="margin-top: 0.6rem;">
+              <li>Один сервер‑мир на регион, сила — только из игры.</li>
+              <li>Фарм‑споты как ядро: топовые зоны дают редкий ресурс и не охраняются системой.</li>
+              <li>Заточка с риском разрушения — главный источник эмоций и сток экономики.</li>
+              <li>Гильдии‑корпорации: налог с территорий, казна, контракты.</li>
+              <li>Сезон 10–12 недель: вайп рейтинга, но не персонажей.</li>
+            </ul>
+          </div>
+          <div class="feature-card">
+            <strong>Горизонт 2 · рост (1–2 года) — мир как политика</strong>
+            <ul style="margin-top: 0.6rem;">
+              <li>Осады замков, налоги, право прохода.</li>
+              <li>Межсерверные арены и «вторжения» без переноса персонажа.</li>
+              <li>Игрок как производитель: монополия гильдии на компонент крафта.</li>
+              <li>Прозрачная биржа с историей цен и публичной статистикой дропа.</li>
+            </ul>
+          </div>
+          <div class="feature-card">
+            <strong>Горизонт 3 · зрелость (3–5 лет) — мир как платформа</strong>
+            <ul style="margin-top: 0.6rem;">
+              <li>Кроссплатформа: PC — основной клиент, мобильный — компаньон.</li>
+              <li>UGC‑слой: пользовательские турниры и правила мира.</li>
+              <li>Живая политика сервера: должности, логи войн, «газета сервера».</li>
+              <li>Экосистема: стримы осад, фан‑сервисы через API.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Почему ставка на конфликт за ресурс</h3>
+        <ul>
+          <li><strong>Дёшево в производстве, дорого в переживании:</strong> спор за спот переиспользует уже существующий мир.</li>
+          <li><strong>Создаёт социальные обязательства</strong> — они удерживают сильнее любой награды: долги, обещания, репутация.</li>
+          <li><strong>Даёт эмоции, о которых рассказывают:</strong> «увели мешок, пока я спал» — это история, а не цифра в отчёте.</li>
+          <li><strong>Уязвимость:</strong> без защиты новичка конфликт превращается в отток — это главный риск модели.</li>
+        </ul>
+      </section>
+
+      <!-- ============================ 2. АУДИТОРИЯ ============================ -->
+      <section id="audience">
+        <h2>2. Целевая аудитория и референсы</h2>
+
+        <h3>2.1 Сегменты</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Сегмент</th>
+                <th>Кто это</th>
+                <th>Что ищет</th>
+                <th>Как удерживаем</th>
+                <th>Доля ожид.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ветеран</td>
+                <td>28–40 лет, играл в R2 / Lineage‑подобные</td>
+                <td>Знакомые петли, статус, клановые войны</td>
+                <td>Точные референсы, GvG, титулы</td>
+                <td>25%</td>
+              </tr>
+              <tr>
+                <td>Фармер‑экономист</td>
+                <td>22–35, любит рынок и производство</td>
+                <td>Крафт, арбитраж, монополия на ресурс</td>
+                <td>Биржа, рецепты, контракты</td>
+                <td>25%</td>
+              </tr>
+              <tr>
+                <td>PvP‑игрок</td>
+                <td>18–30, приходит за дракой</td>
+                <td>Честный бой, рейтинг, арены</td>
+                <td>Арены, осады, рейтинги сезона</td>
+                <td>30%</td>
+              </tr>
+              <tr>
+                <td>Социальный / казуал</td>
+                <td>20–40, играет «за компанию»</td>
+                <td>Гильдия, чат, ощущение нужности</td>
+                <td>Роли поддержки, снабжение тыла</td>
+                <td>15%</td>
+              </tr>
+              <tr>
+                <td>Соло‑исследователь</td>
+                <td>20–35, любит мир и историю</td>
+                <td>Атмосфера, секреты, коллекции</td>
+                <td>Лор, скрытые зоны, коллекции</td>
+                <td>5%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>2.2 Что берём у R2 и что меняем</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Элемент R2</th>
+                <th>Берём</th>
+                <th>Меняем</th>
+                <th>Зачем</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Открытый мир с PvP‑зонами</td>
+                <td>Да, как есть</td>
+                <td>Мягче кривая наказания на низких уровнях</td>
+                <td>Не терять новичков в первые часы</td>
+              </tr>
+              <tr>
+                <td>Споты фарма с боссом‑держателем</td>
+                <td>Да</td>
+                <td>Добавляем контракты гильдий на поставку</td>
+                <td>Экономика становится социальной</td>
+              </tr>
+              <tr>
+                <td>Заточка с шансом разрушения</td>
+                <td>Да, это ядро эмоций</td>
+                <td>Страховочные предметы, добываемые только в игре</td>
+                <td>Риск остаётся, но управляемый</td>
+              </tr>
+              <tr>
+                <td>Классы с жёсткими ролями</td>
+                <td>Да</td>
+                <td>Второй персонаж на аккаунте под другую роль</td>
+                <td>Игрок закрывает 2 роли без 4 часов в день</td>
+              </tr>
+              <tr>
+                <td>Гильдейские войны</td>
+                <td>Да</td>
+                <td>Расписание войн и публичные логи</td>
+                <td>Прозрачность снижает токсичность</td>
+              </tr>
+              <tr>
+                <td>Долгая прокачка 1–60</td>
+                <td>Частично</td>
+                <td>Кап за ~20 часов — точка входа в мету</td>
+                <td>Ценность времени игрока</td>
+              </tr>
+              <tr>
+                <td>Жёсткая потеря вещей при смерти</td>
+                <td>Частично</td>
+                <td>Теряем ресурсы и опыт, не экипировку (кроме флага PvP)</td>
+                <td>Снижаем порог входа</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================ 3. ПРИНЦИПЫ ============================ -->
+      <section id="principles">
+        <h2>3. Обещание игроку и дизайн‑принципы</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <strong>1. Сила — только из игры.</strong><br />
+            Ни один предмет, влияющий на бой, не продаётся за деньги. Платно — внешний вид, удобство, слоты персонажей, косметика гильдии.
+          </div>
+          <div class="feature-card">
+            <strong>2. Время конвертируется в риск, а не в гарантию.</strong><br />
+            Фарм даёт шанс, а не прогресс‑бар. Игрок выбирает: безопасно и медленно или рискованно и быстро.
+          </div>
+          <div class="feature-card">
+            <strong>3. Конфликт должен быть осознанным.</strong><br />
+            Игрок всегда понимает, что он рискует и чем. Никаких «убийств из‑за угла» без предупреждения и последствий.
+          </div>
+          <div class="feature-card">
+            <strong>4. Социальная структура — это механика.</strong><br />
+            Гильдия даёт экономические права и обязанности: налог, склад, доступ к ресурсам.
+          </div>
+          <div class="feature-card">
+            <strong>5. Потери создают истории, но не брошенные аккаунты.</strong><br />
+            У каждой жёсткой механики есть восстановимый путь.
+          </div>
+        </div>
+
+        <div class="warning-box">
+          <strong>Анти‑цели — что мы сознательно не делаем:</strong>
+          <ul style="margin-bottom: 0;">
+            <li>Автобой и «афк‑фарм» как норма — макросы ломают экономику дефицита.</li>
+            <li>Продажа силы, золота, опыта и предметов — даже в «удобной» упаковке.</li>
+            <li>Бесконечная вертикаль уровня: после капа растёт качество предметов и репутация, а не число.</li>
+            <li>Игра вокруг одиночного сюжета: сюжет — рамка, а не содержание.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============================ 4. CORE LOOP ============================ -->
+      <section id="core-loop">
+        <h2>4. Core Loop (основной игровой цикл)</h2>
+        <p>Продукт держится на трёх вложенных петлях. Каждая следующая длиннее и «дороже» по обязательствам игрока.</p>
+
+        <figure>
+          <div class="diagram">
+            <svg viewBox="0 0 1000 470" role="img" aria-label="Три петли вовлечения">
+              <circle cx="160" cy="275" r="95" fill="none" stroke="#ff4d4d" stroke-width="1.6" />
+              <text x="160" y="150" text-anchor="middle" class="svg-label-red">МИКРО · 30–90 СЕК</text>
+              <text x="160" y="263" text-anchor="middle" class="svg-text">
+                <tspan x="160" dy="0">убил моба</tspan>
+                <tspan x="160" dy="20">→ дроп</tspan>
+                <tspan x="160" dy="20">→ опыт</tspan>
+              </text>
+
+              <circle cx="450" cy="275" r="125" fill="none" stroke="#ff9f1c" stroke-width="1.6" />
+              <text x="450" y="118" text-anchor="middle" class="svg-label-orange">СЕССИЯ · 45–90 МИН</text>
+              <text x="450" y="250" text-anchor="middle" class="svg-text">
+                <tspan x="450" dy="0">зачистка спота</tspan>
+                <tspan x="450" dy="20">→ лут и ресурсы</tspan>
+                <tspan x="450" dy="20">→ заточка и крафт</tspan>
+                <tspan x="450" dy="20">→ рост силы</tspan>
+              </text>
+
+              <circle cx="760" cy="275" r="160" fill="none" stroke="#c0bfff" stroke-width="1.6" />
+              <text x="760" y="83" text-anchor="middle" class="svg-label-violet">МЕТА · НЕДЕЛЯ / СЕЗОН</text>
+              <text x="760" y="245" text-anchor="middle" class="svg-text">
+                <tspan x="760" dy="0">контроль зон</tspan>
+                <tspan x="760" dy="20">→ войны гильдий и осады</tspan>
+                <tspan x="760" dy="20">→ монополия на ресурс</tspan>
+                <tspan x="760" dy="20">→ титулы и власть</tspan>
+              </text>
+
+              <text x="500" y="462" text-anchor="middle" class="svg-text-dim">Каждая петля поднимает цену участия: время → риск потери → социальные обязательства</text>
+            </svg>
+          </div>
+          <figcaption>Рис. 1. Три петли вовлечения и рост цены участия.</figcaption>
+        </figure>
+
+        <h3>4.1 Микро‑петля (30–90 секунд): «ещё один моб»</h3>
+        <ol>
+          <li>Убийство моба.</li>
+          <li>Дроп: материал, расходник или шанс на предмет.</li>
+          <li>Опыт и следующий моб.</li>
+        </ol>
+        <ul>
+          <li><strong>Ключ — читаемый дроп:</strong> игрок за секунду понимает, что упало и зачем это нужно.</li>
+          <li>Дроп различается по зонам: одна и та же база нужна разным крафт‑цепочкам — это создаёт торговлю.</li>
+        </ul>
+
+        <h3>4.2 Сессионная петля (45–90 минут): «сходил с пользой»</h3>
+        <ol>
+          <li>Выбор зоны по соотношению риск / награда.</li>
+          <li>Зачистка спота и заполнение сумки.</li>
+          <li>Возврат в город: заточка, крафт, продажа.</li>
+          <li>Рост силы и подготовка к следующему заходу.</li>
+        </ol>
+        <ul>
+          <li><strong>Обязательный элемент — точка риска на обратном пути:</strong> ценность лута повышает цену смерти.</li>
+          <li>Целевое время сессии 45–60 минут, чтобы в игру можно было играть после работы, а не жить в ней.</li>
+        </ul>
+
+        <h3>4.3 Мета‑петля (неделя / сезон): «нас знают»</h3>
+        <ol>
+          <li>Гильдия → войны за зоны.</li>
+          <li>Монополия на редкий ресурс → налоги и казна.</li>
+          <li>Осады замков → титулы и влияние на сервере.</li>
+        </ol>
+        <ul>
+          <li>Сезон 10–12 недель: рейтинги обнуляются, территории пересматриваются, персонажи остаются.</li>
+          <li>Ветерану сезон даёт задачу «заново выстроить позицию», новичку — шанс войти в политику сервера.</li>
+        </ul>
+      </section>
+
+      <!-- ============================ 5. МЕХАНИКИ ============================ -->
+      <section id="mechanics">
+        <h2>5. Основные механики и правила</h2>
+
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Приоритет</th>
+                <th>Значение</th>
+                <th>Что входит</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>P0</td>
+                <td>Обязательно к MVP</td>
+                <td>Мир и перемещение, PvE и споты, лут, заточка, инвентарь, прогресс персонажа, регистрация</td>
+              </tr>
+              <tr>
+                <td>P1</td>
+                <td>Первый крупный апдейт</td>
+                <td>Гильдии, PvP‑флаги и карма, аукцион, крафт‑цепочки, сезон</td>
+              </tr>
+              <tr>
+                <td>P2</td>
+                <td>Рост</td>
+                <td>Осады, территориальная политика, кросс‑серверные события, мобильный компаньон</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Мир и перемещение</h3>
+        <ul>
+          <li><strong>Полуоткрытый мир:</strong> хаб‑город → регионы с линейной навигацией и ветками зон по уровню. Бесшовных открытых пространств на старте нет — это дорого и не даёт геймплея.</li>
+          <li><strong>Три типа зон:</strong> безопасные (город, аукцион), спорные (PvP с последствиями), опасные (полный лут при смерти, лучший дроп).</li>
+          <li><strong>Транспорт:</strong> точки перехода, свитки возврата, караваны для перевозки ресурсов между регионами — караван можно ограбить, это PvP‑контент.</li>
+          <li><strong>Плотность:</strong> целевое время от точки до точки 40–90 секунд, чтобы мир не был «пустым пробегом».</li>
+        </ul>
+
+        <h3>PvE, споты и фарм</h3>
+        <ul>
+          <li><strong>Спот</strong> — ограниченная область с респавном мобов и, как правило, элитным держателем. Даёт редкий материал.</li>
+          <li><strong>Право на спот не системное, а социальное:</strong> нет «аренды», но есть последствия — убийство чужого фармера в спорной зоне включает PvP‑последствия.</li>
+          <li><strong>Элитные мобы и мировые боссы</strong> по расписанию: точка сбора гильдий, повод для конфликта.</li>
+          <li><strong>Анти‑фарм:</strong> убывающий дроп при долгом нахождении на одном споте (снижает ботоводство, но не наказывает нормальную игру — только 6+ часов на одном месте).</li>
+        </ul>
+
+        <h3>Лут, экипировка и заточка</h3>
+        <p>Сердце эмоций продукта. Модель: предмет редкости → базовая сила → уровни заточки (+1…+15) с риском.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Уровень заточки</th>
+                <th>Шанс успеха</th>
+                <th>Цена провала</th>
+                <th>Что делает игрок</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>+1…+3</td><td>100–85%</td><td>Ресурс теряется, предмет цел</td><td>Спокойно улучшает базу</td></tr>
+              <tr><td>+4…+7</td><td>80–55%</td><td>Ресурс + понижение на 1</td><td>Думает, стоит ли сегодня</td></tr>
+              <tr><td>+8…+10</td><td>50–30%</td><td>Предмет может быть разрушен</td><td>Использует страховку из игры</td></tr>
+              <tr><td>+11…+13</td><td>25–12%</td><td>Высокий риск разрушения</td><td>Готовится, копит, идёт на боссов</td></tr>
+              <tr><td>+14…+15</td><td>8–3%</td><td>Почти всегда разрушение</td><td>Предмет‑легенда, предмет гордости</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li><strong>Страховка</strong> (страховочный камень) добывается только в игре и стоит дорого: она не отменяет риск, а ограничивает потерю.</li>
+          <li><strong>Публичность:</strong> заточка на +12 и выше анонсируется в мире — это социальный капитал.</li>
+          <li><strong>Никаких гарантированных слотов за деньги:</strong> ускорения только на восстановление энергии и кулдауны, не на шансы.</li>
+        </ul>
+
+        <h3>PvP и последствия</h3>
+        <ul>
+          <li><strong>Флаг</strong> включается вручную или при входе в спорную зону. В безопасных зонах PvP нет вообще.</li>
+          <li><strong>Карма и наказание:</strong> серия убийств мирных повышает «розыск», растёт потеря при смерти, за голову платят другие игроки.</li>
+          <li><strong>Арены и рейтинг</strong> — отдельный режим без потерь: там меряется умение, а не запас ресурсов.</li>
+          <li><strong>Кросс‑серверные события</strong> — отрядами, без переноса персонажей между мирами.</li>
+        </ul>
+
+        <h3>Гильдии и социальные системы</h3>
+        <ul>
+          <li><strong>Уровни гильдии</strong>, казна, налог с добычи территории, права доступа (склад, приглашения, войны).</li>
+          <li><strong>Контракты:</strong> заказ на поставку N единиц ресурса с залогом; исполнение проверяется системой.</li>
+          <li><strong>Роли:</strong> лидер, офицер, казначей, квартирмейстер, мастер крафта — разные права, не только «звание».</li>
+          <li><strong>Публичные логи войн</strong> и «газета сервера» — инструменты доверия и контента.</li>
+        </ul>
+
+        <h3>Крафт и экономика производства</h3>
+        <ul>
+          <li><strong>Цепочки из 3–4 шагов:</strong> сырьё (спот) → переработка (станок, здание) → компонент → предмет. Монополия возможна на любом шаге.</li>
+          <li><strong>Долгие заказы</strong> — офлайн‑производство с реальным временем: возвращает игрока в игру, но не требует присутствия.</li>
+          <li><strong>Качественный разброс:</strong> одинаковые рецепты с разным качеством результата — рынок для «среднего» товара.</li>
+        </ul>
+
+        <h3>Осады и территория</h3>
+        <ul>
+          <li><strong>Расписание:</strong> две осады в неделю в фиксированное время — событие, вокруг которого живёт сервер.</li>
+          <li><strong>Механика:</strong> разрушаемые ворота, контроль точек, снабжение осады ресурсами с территорий.</li>
+          <li><strong>Результат:</strong> налог с торговли на территории, доступ к эксклюзивной зоне, право назначать пошлины на проход.</li>
+        </ul>
+
+        <h3>Кроссплатформа и мобильный компаньон</h3>
+        <ul>
+          <li><strong>PC</strong> — полный клиент. <strong>Мобильный</strong> — компаньон: аукцион, гильдейский чат, крафт‑заказы, управление караваном, просмотр осады.</li>
+          <li>Мобильный PvP‑бой не вводим: разная точность управления даёт неравенство, которое экономика дефицита не прощает.</li>
+        </ul>
+
+        <h3>Целевые параметры баланса (MVP)</h3>
+        <p class="muted">Стартовые гипотезы для прототипа, а не финальный баланс: они задают рамку, внутри которой команда может двигать значения, не ломая ощущение игры.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Параметр</th>
+                <th>Цель MVP</th>
+                <th>Почему так</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Время убийства обычного моба</td><td>4–8 сек</td><td>Ритм фарма приятный, но не превращается в клик</td></tr>
+              <tr><td>Время убийства элиты</td><td>25–40 сек</td><td>Достаточно, чтобы конкурирующая группа успела вмешаться</td></tr>
+              <tr><td>Время убийства игрока в PvP</td><td>8–15 сек</td><td>Ошибка наказуема, но есть время среагировать и уйти</td></tr>
+              <tr><td>Время до 10 уровня (туториал)</td><td>60–90 мин</td><td>Первая значимая награда в первую сессию</td></tr>
+              <tr><td>Время до капа (60 уровень)</td><td>18–24 ч</td><td>2–3 недели для играющего по 1 часу в день</td></tr>
+              <tr><td>Шанс редкого ресурса с элиты</td><td>8–12%</td><td>Достаточно редко для цены, достаточно часто для надежды</td></tr>
+              <tr><td>Шанс заточки на +8 / +12</td><td>40% / 18%</td><td>Точка, где появляется настоящий страх потери</td></tr>
+              <tr><td>Время на одном споте до падения дропа</td><td>после 3 ч</td><td>Не наказывает нормальную сессию, мешает боту</td></tr>
+              <tr><td>Стартовый размер сумки</td><td>60 слотов</td><td>Цикл «заполнил → вернулся в город» работает за 30–40 минут</td></tr>
+              <tr><td>Оборот аукциона на игрока в день</td><td>3–8 сделок</td><td>Экономика живая, но не превращается в биржевой симулятор</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================ 6. ЭКОНОМИКА ============================ -->
+      <section id="economy">
+        <h2>6. Экономика и монетизация</h2>
+
+        <h3>6.1 Источники и стоки</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Источники (приход в мир)</th>
+                <th>Стоки (уход из мира)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Дроп с мобов и боссов</td><td>Заточка и разрушение предметов</td></tr>
+              <tr><td>Ресурсы зон и спотов</td><td>Крафт с расходом компонентов</td></tr>
+              <tr><td>Награды сезонов и событий</td><td>Потеря лута при смерти в опасных зонах</td></tr>
+              <tr><td>Контракты гильдий</td><td>Налоги территорий и комиссии аукциона</td></tr>
+              <tr><td>Косметика (без влияния на бой)</td><td>Ремонт, расходники, страховки, пошлины</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Целевая инфляция ресурса — 3–5% в месяц. Контроль: динамический дроп и «сжигающие» события, где излишек компонентов обменивается на косметическую награду.</p>
+
+        <h3>6.2 Монетизационное обещание игроку</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Продаём</th>
+                <th>Не продаём никогда</th>
+                <th>Формат</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Косметика (образы, декор маунтов, скины)</td><td>Предметы с характеристиками</td><td>Прямая покупка, ротация</td></tr>
+              <tr><td>Слоты персонажей (3‑й и 4‑й)</td><td>Ресурсы, золото, опыт</td><td>Разовые разблокировки</td></tr>
+              <tr><td>Удобство (склад, слоты аукциона)</td><td>Шансы заточки, страховки</td><td>Подписка «премиум»</td></tr>
+              <tr><td>Сезонный батлпасс (косметика + ресурсы)</td><td>Ускорение фарма с множителями</td><td>Сезон 10–12 недель</td></tr>
+              <tr><td>Гильдейские эмблемы и знамёна</td><td>Респавн‑таймеры и позиции боссов</td><td>Покупка внутри гильдии</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="info-box">
+          <strong>Принцип честной монетизации</strong><br />
+          Это не идеология, а требование к экономике: если силу можно купить, монополия на ресурс перестаёт быть ценностью и мета‑петля умирает.
+        </div>
+
+        <h3>6.3 Анти‑RMT и античит</h3>
+        <ul>
+          <li>Верификация e‑mail и телефона обязательна для торговли; лимиты оборота на новые аккаунты.</li>
+          <li>Телеметрия: аномальные маршруты фарма, время активности 20+ часов, повторяющиеся паттерны ввода.</li>
+          <li>Санкции градиентные: ограничение торговли → теневой рынок для нарушителя → блокировка с публичным реестром гильдии.</li>
+        </ul>
+      </section>
+
+      <!-- ============================ 7. АККАУНТ ============================ -->
+      <section id="account">
+        <h2>7. Аккаунт и персонажи</h2>
+        <p>Раздел отвечает на вопрос из брифа: сколько персонажей живёт на аккаунте и что из данных принадлежит аккаунту, а что персонажу.</p>
+
+        <h3>7.1 Варианты и рекомендация</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Вариант</th>
+                <th>Плюсы</th>
+                <th>Минусы</th>
+                <th>Решение</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1 персонаж на аккаунт</td>
+                <td>Предельно просто; сила привязанности на уровне игрока; нет вопроса «на кого заходить»</td>
+                <td>Игрок «заперт» в роли; для другой роли нужен второй аккаунт → появляется мультиаккаунтинг</td>
+                <td>Не берём</td>
+              </tr>
+              <tr>
+                <td><strong>2 персонажа базово</strong></td>
+                <td>Игрок закрывает две роли (фарм + поддержка/танк) без 4 часов в день; снимает часть мультиаккаунтинга; один общий склад</td>
+                <td>Нужно ограничить передачу ресурсов между персонажами, иначе это инструмент бота</td>
+                <td><strong>Базовый сценарий</strong></td>
+              </tr>
+              <tr>
+                <td>2 + расширение до 4</td>
+                <td>Монетизация без pay‑to‑win (слот не даёт силы); долгосрочная привязка</td>
+                <td>Больше слотов = больше мультибоксинга и «ферм»</td>
+                <td><strong>Расширение в V1</strong></td>
+              </tr>
+              <tr>
+                <td>4+ персонажей / без лимита</td>
+                <td>Максимум свободы</td>
+                <td>Экономика рушится: бесконечные фермы на одном аккаунте</td>
+                <td>Не берём</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="gold-box">
+          <strong>Рекомендация:</strong><br />
+          1 аккаунт = 2 персонажа базово, расширяемо до 4 (слоты 3 и 4 — платные разблокировки). Оба персонажа базовой пары доступны сразу после туториала, но <strong>второй создаётся только на том же сервере</strong>, что и первый — так общий склад не превращается в межсерверный обход ограничений.
+        </div>
+
+        <h3>7.2 Что общее на аккаунте и что личное</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Уровень</th>
+                <th>Что хранится</th>
+                <th>Почему так</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Аккаунт (глобально)</td>
+                <td>Логин, e‑mail, пароль/привязки, 2FA, локаль, страна, согласия, статусы и флаги, премиум‑валюта, косметика, достижения аккаунта, батлпасс, лимиты активности</td>
+                <td>Не влияет на силу; удобно иметь «один раз и навсегда»; выживает при переносе между серверами</td>
+              </tr>
+              <tr>
+                <td>Аккаунт + сервер</td>
+                <td>Общий склад (account bank), разблокировки рецептов, лимиты аукциона</td>
+                <td>Ограничивает паразитную перекачку ресурсов и сохраняет смысл серверной экономики</td>
+              </tr>
+              <tr>
+                <td>Персонаж</td>
+                <td>Имя, класс, уровень, характеристики, экипировка, инвентарь, квесты, позиция, гильдия, PvP‑карма, титулы, настройки хотбара</td>
+                <td>Всё, что даёт силу в бою, должно жить на персонаже — иначе появляется способ обойти риск</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <figure>
+          <div class="diagram">
+            <svg viewBox="0 0 1000 460" role="img" aria-label="Модель данных: аккаунт, персонажи, сервер">
+              <!-- ACCOUNT -->
+              <rect x="8" y="60" width="235" height="130" rx="8" class="svg-box-violet" />
+              <text x="125" y="86" text-anchor="middle" class="svg-text">ACCOUNT (1)</text>
+              <text x="125" y="108" text-anchor="middle" class="svg-text-mono">account_id · login</text>
+              <text x="125" y="126" text-anchor="middle" class="svg-text-mono">email · password_hash</text>
+              <text x="125" y="144" text-anchor="middle" class="svg-text-mono">status · country · 2FA</text>
+              <text x="125" y="162" text-anchor="middle" class="svg-text-mono">consents · risk_score</text>
+
+              <!-- CHARACTER -->
+              <rect x="8" y="300" width="235" height="130" rx="8" class="svg-box" />
+              <text x="125" y="326" text-anchor="middle" class="svg-text">CHARACTER (2 → 4)</text>
+              <text x="125" y="348" text-anchor="middle" class="svg-text-mono">character_id + slot_index</text>
+              <text x="125" y="366" text-anchor="middle" class="svg-text-mono">server_id · name · class</text>
+              <text x="125" y="384" text-anchor="middle" class="svg-text-mono">level · stats · position</text>
+              <text x="125" y="402" text-anchor="middle" class="svg-text-mono">инвентарь · гильдия · карма</text>
+
+              <line x1="125" y1="192" x2="125" y2="296" stroke="#ff9f1c" stroke-width="1.4" />
+              <polygon points="125,298 120,288 130,288" fill="#ff9f1c" />
+              <text x="140" y="248" class="svg-label-orange">1 : 2…4</text>
+
+              <!-- account entities -->
+              <rect x="330" y="20" width="300" height="66" rx="8" class="svg-box-accent" />
+              <text x="480" y="46" text-anchor="middle" class="svg-text">ACCOUNT_PROFILE (общее)</text>
+              <text x="480" y="68" text-anchor="middle" class="svg-text-mono">премиум‑валюта · косметика · батлпасс</text>
+
+              <rect x="330" y="110" width="300" height="66" rx="8" class="svg-box-accent" />
+              <text x="480" y="136" text-anchor="middle" class="svg-text">ACCOUNT_BANK (в рамках сервера)</text>
+              <text x="480" y="158" text-anchor="middle" class="svg-text-mono">account_id + server_id · общий склад</text>
+
+              <rect x="330" y="200" width="300" height="66" rx="8" class="svg-box-accent" />
+              <text x="480" y="226" text-anchor="middle" class="svg-text">ACCOUNT_UNLOCK</text>
+              <text x="480" y="248" text-anchor="middle" class="svg-text-mono">слоты персонажей (2–4) · функции</text>
+
+              <rect x="330" y="290" width="300" height="66" rx="8" class="svg-box" />
+              <text x="480" y="316" text-anchor="middle" class="svg-text">ACCOUNT_SETTINGS / AUDIT</text>
+              <text x="480" y="338" text-anchor="middle" class="svg-text-mono">сессии · устройства · согласия · логи</text>
+
+              <!-- bus -->
+              <path d="M243 125 H285" class="svg-line" />
+              <path d="M285 53 V323" class="svg-line" />
+              <path d="M285 53 H325" class="svg-line" />
+              <path d="M285 143 H325" class="svg-line" />
+              <path d="M285 233 H325" class="svg-line" />
+              <path d="M285 323 H325" class="svg-line" />
+              <polygon points="325,53 315,49 315,57" fill="#a1a5b1" />
+              <polygon points="325,143 315,139 315,147" fill="#a1a5b1" />
+              <polygon points="325,233 315,229 315,237" fill="#a1a5b1" />
+              <polygon points="325,323 315,319 315,327" fill="#a1a5b1" />
+
+              <!-- SERVER -->
+              <rect x="680" y="330" width="300" height="90" rx="8" class="svg-box" />
+              <text x="830" y="360" text-anchor="middle" class="svg-text">SERVER</text>
+              <text x="830" y="384" text-anchor="middle" class="svg-text-mono">server_id · регион</text>
+              <text x="830" y="404" text-anchor="middle" class="svg-text-mono">ruleset · capacity</text>
+
+              <path d="M630 143 H660 V375 H672" class="svg-line" />
+              <polygon points="674,375 664,370 664,380" fill="#a1a5b1" />
+              <text x="668" y="262" class="svg-text-dim">N : 1</text>
+
+              <text x="500" y="446" text-anchor="middle" class="svg-text-dim">Сила персонажа — только из игры; платное живёт на аккаунте и силы не даёт</text>
+            </svg>
+          </div>
+          <figcaption>Рис. 2. Модель данных: аккаунт, профиль, банк, персонажи и сервер.</figcaption>
+        </figure>
+
+        <h3>7.3 Правила сосуществования персонажей</h3>
+        <ul>
+          <li><strong>Общий аккаунт‑банк</strong> работает только внутри сервера; передача предметов между персонажами — через банк, с лимитом объёма в сутки для новых аккаунтов.</li>
+          <li><strong>Общая косметика:</strong> купленный образ доступен всем персонажам — это усиливает ценность покупки, а не силу.</li>
+          <li><strong>Одновременный вход — только один персонаж</strong> на аккаунт. Никаких двух клиентов с одного аккаунта.</li>
+          <li><strong>Удаление персонажа:</strong> 72 часа карантина, возврат через поддержку невозможен; слот освобождается только после карантина.</li>
+          <li><strong>Смена сервера персонажем:</strong> платная услуга с лимитом 1 раз в 30 дней и только на сервер без активной осады.</li>
+        </ul>
+
+        <h3>7.4 Анти‑мультибоксинг и мультиаккаунтинг</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Риск</th>
+                <th>Механика ограничения</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Фермы на бесплатных слотах</td><td>Ограничение оборота аккаунта‑новичка (первые 72 часа), проверка устройства</td></tr>
+              <tr><td>Один игрок — 5 аккаунтов для контроля рынка</td><td>Лимит одновременных сессий на устройство/IP, телеметрия поведения</td></tr>
+              <tr><td>Перекачка ресурсов</td><td>Банк внутри сервера, дневные лимиты, налоговая история сделок</td></tr>
+              <tr><td>Ботоводство</td><td>Убывающий дроп на одном споте, капча‑события в спорных зонах, ML‑детект паттернов</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================ 8. РЕГИСТРАЦИЯ ============================ -->
+      <section id="registration">
+        <h2>8. Регистрация: свойства, флоу, правила</h2>
+        <p>Цель раздела — дать разработке точный перечень того, что мы храним и проверяем, и показать, как выглядит путь игрока до первого шага в мире.</p>
+
+        <figure>
+          <div class="diagram">
+            <svg viewBox="0 0 1000 470" role="img" aria-label="Флоу регистрации">
+              <!-- ряд 1 -->
+              <rect x="8" y="20" width="225" height="86" rx="8" class="svg-box" />
+              <text x="120" y="50" text-anchor="middle" class="svg-text">1. Вход</text>
+              <text x="120" y="72" text-anchor="middle" class="svg-text-dim">Steam / Google / Apple</text>
+              <text x="120" y="90" text-anchor="middle" class="svg-text-dim">E‑mail + пароль</text>
+
+              <rect x="266" y="20" width="225" height="86" rx="8" class="svg-box" />
+              <text x="378" y="50" text-anchor="middle" class="svg-text">2. Верификация</text>
+              <text x="378" y="72" text-anchor="middle" class="svg-text-dim">код 6 цифр, живёт 15 мин</text>
+              <text x="378" y="90" text-anchor="middle" class="svg-text-dim">аккаунт в статусе limited</text>
+
+              <rect x="524" y="20" width="225" height="86" rx="8" class="svg-box" />
+              <text x="636" y="50" text-anchor="middle" class="svg-text">3. Возраст и регион</text>
+              <text x="636" y="72" text-anchor="middle" class="svg-text-dim">EULA, согласие на ПД</text>
+
+              <rect x="782" y="20" width="210" height="86" rx="8" class="svg-box" />
+              <text x="887" y="50" text-anchor="middle" class="svg-text">4. Сервер</text>
+              <text x="887" y="72" text-anchor="middle" class="svg-text-dim">ruleset + загрузка</text>
+
+              <path d="M233 63 H262" class="svg-line" /><polygon points="262,63 252,58 252,68" fill="#a1a5b1" />
+              <path d="M491 63 H520" class="svg-line" /><polygon points="520,63 510,58 510,68" fill="#a1a5b1" />
+              <path d="M749 63 H778" class="svg-line" /><polygon points="778,63 768,58 768,68" fill="#a1a5b1" />
+
+              <!-- ряд 2 -->
+              <rect x="782" y="170" width="210" height="86" rx="8" class="svg-box-accent" />
+              <text x="887" y="200" text-anchor="middle" class="svg-text">5. Создание</text>
+              <text x="887" y="222" text-anchor="middle" class="svg-text-dim">персонажа №1</text>
+
+              <rect x="524" y="170" width="225" height="86" rx="8" class="svg-box" />
+              <text x="636" y="200" text-anchor="middle" class="svg-text">6. Туториал</text>
+              <text x="636" y="222" text-anchor="middle" class="svg-text-dim">уровни 1–10</text>
+
+              <rect x="8" y="170" width="480" height="86" rx="8" class="svg-box" />
+              <text x="248" y="205" text-anchor="middle" class="svg-text">7. Игровая петля</text>
+              <text x="248" y="228" text-anchor="middle" class="svg-text-dim">фарм → PvP → гильдия → осады</text>
+
+              <path d="M887 106 V166" class="svg-line" /><polygon points="887,168 882,158 892,158" fill="#a1a5b1" />
+              <path d="M782 213 H753" class="svg-line" /><polygon points="753,213 763,208 763,218" fill="#a1a5b1" />
+              <path d="M524 213 H492" class="svg-line" /><polygon points="492,213 502,208 502,218" fill="#a1a5b1" />
+              <path d="M248 256 V300" class="svg-line" /><polygon points="248,302 243,292 253,292" fill="#a1a5b1" />
+
+              <!-- ряд 3 -->
+              <rect x="8" y="305" width="480" height="86" rx="8" class="svg-box" />
+              <text x="248" y="335" text-anchor="middle" class="svg-text">Слот 2 доступен сразу — вторая роль</text>
+              <text x="248" y="358" text-anchor="middle" class="svg-text-dim">Слоты 3–4 открываются платно</text>
+
+              <rect x="524" y="305" width="225" height="86" rx="8" class="svg-box" />
+              <text x="636" y="335" text-anchor="middle" class="svg-text">Общее на аккаунт</text>
+              <text x="636" y="358" text-anchor="middle" class="svg-text-dim">валюта · косметика · склад</text>
+
+              <rect x="782" y="305" width="210" height="86" rx="8" class="svg-box" />
+              <text x="887" y="335" text-anchor="middle" class="svg-text">Статус full</text>
+              <text x="887" y="358" text-anchor="middle" class="svg-text-dim">после подтверждения e‑mail</text>
+
+              <path d="M491 348 H520" class="svg-line" /><polygon points="520,348 510,343 510,353" fill="#a1a5b1" />
+              <path d="M749 348 H778" class="svg-line" /><polygon points="778,348 768,343 768,353" fill="#a1a5b1" />
+
+              <rect x="8" y="410" width="984" height="46" rx="8" fill="rgba(255,159,28,0.08)" stroke="#ff9f1c" stroke-width="1" />
+              <text x="500" y="430" text-anchor="middle" class="svg-text-dim">Ветки исключений: e‑mail занят → вход или привязка · имя занято → игрок вводит новое</text>
+              <text x="500" y="447" text-anchor="middle" class="svg-text-dim">почта OAuth‑провайдера уже в базе → запрос пароля · отказ от обязательных согласий → регистрация не завершается</text>
+            </svg>
+          </div>
+          <figcaption>Рис. 3. Путь от экрана входа до персонажа в мире.</figcaption>
+        </figure>
+
+        <h3>8.1 Шаги флоу</h3>
+        <ul>
+          <li><strong>Шаг 0. Экран входа.</strong> Варианты в порядке приоритета: Steam, Google, Apple (обязательно для iOS), e‑mail + пароль. Внешний провайдер привязывается к внутреннему <code>account_id</code>, а не заменяет его.</li>
+          <li><strong>Шаг 1. Верификация.</strong> Код на 6 цифр, живёт 15 минут, максимум 5 попыток. До подтверждения аккаунт в статусе <code>limited</code>: играть можно, торговать и создавать гильдию — нельзя.</li>
+          <li><strong>Шаг 2. Возраст, регион, согласия.</strong> Дата рождения (храним факт прохождения проверки, а не саму дату), регион и страна определяют серверы и платежи, отдельные согласия на EULA, ПД и маркетинг (по умолчанию выключено). Гостевого режима нет.</li>
+          <li><strong>Шаг 3. Сервер и создание персонажа.</strong> Список серверов с регионом, правилами, загрузкой и возрастом; класс, внешность, имя с проверкой уникальности в пределах сервера. Имя: 3–16 символов, буквы и цифры, фильтр запрещённых слов и визуальных омоглифов.</li>
+          <li><strong>Результат.</strong> После создания первого персонажа слот 2 доступен сразу (по умолчанию тот же сервер).</li>
+        </ul>
+
+        <h3>8.2 Свойства аккаунта</h3>
+        <p class="muted">Полный перечень полей. «Обязательное» — блокирует завершение регистрации; «по триггеру» — запрашивается позже.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Поле</th>
+                <th>Тип</th>
+                <th>Когда</th>
+                <th>Зачем нужно</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>account_id</code></td><td>UUID v7</td><td>Обязательное</td><td>Внутренний идентификатор; никогда не показывается игроку</td></tr>
+              <tr><td><code>login</code></td><td>строка 3–24</td><td>Обязательное</td><td>Уникальный логин; не равен e‑mail, не отображается в мире</td></tr>
+              <tr><td><code>email</code></td><td>строка, нормализованная</td><td>Обязательное</td><td>Уникальный индекс; вход, восстановление, уведомления, торговля</td></tr>
+              <tr><td><code>email_verified</code></td><td>bool + timestamp</td><td>Обязательное</td><td>false до подтверждения; переводит аккаунт из limited в full</td></tr>
+              <tr><td><code>password_hash</code></td><td>argon2id</td><td>Обязательное*</td><td>Только для аккаунтов без внешнего провайдера; минимум 10 символов</td></tr>
+              <tr><td><code>auth_providers</code></td><td>список (steam/google/apple)</td><td>Обязательное</td><td>Храним provider_uid и признаки привязки; токены не храним</td></tr>
+              <tr><td><code>display_name</code></td><td>строка 2–20</td><td>Обязательное</td><td>Имя аккаунта для друзей и ленты, не для мира</td></tr>
+              <tr><td><code>birth_date_check</code></td><td>флаг + страна</td><td>Обязательное</td><td>Храним только факт проверки; возрастная политика зависит от региона</td></tr>
+              <tr><td><code>country / region</code></td><td>ISO‑код</td><td>Обязательное</td><td>Доступные серверы, платежи, правовые требования</td></tr>
+              <tr><td><code>locale / timezone</code></td><td>BCP‑47, IANA</td><td>Обязательное</td><td>Язык интерфейса, расписание событий и осад в локальном времени</td></tr>
+              <tr><td><code>status</code></td><td>limited / full / suspended / banned / deleted</td><td>Системное</td><td>Определяет доступные функции</td></tr>
+              <tr><td><code>role</code></td><td>player / moderator / support / admin</td><td>Системное</td><td>Права в игре и в поддержке</td></tr>
+              <tr><td><code>2fa</code></td><td>тип + секрет + резервные коды</td><td>По триггеру</td><td>Не даёт отобрать аккаунт, на котором лежит гильдия</td></tr>
+              <tr><td><code>consents</code></td><td>JSON (тип → версия → дата)</td><td>Обязательное</td><td>EULA и ПД обязательны; маркетинг — отдельно</td></tr>
+              <tr><td><code>premium_currency</code></td><td>целое</td><td>Системное</td><td>Общая на аккаунт, не торгуется</td></tr>
+              <tr><td><code>unlocked_character_slots</code></td><td>2–4</td><td>Системное</td><td>Базово 2, третий и четвёртый — платные разблокировки</td></tr>
+              <tr><td><code>premium_until</code></td><td>timestamp / null</td><td>Системное</td><td>Подписка «премиум» (удобство)</td></tr>
+              <tr><td><code>flags / risk_score</code></td><td>JSON</td><td>Системное</td><td>Мультиаккаунтинг, RMT‑риск, античит‑метки</td></tr>
+              <tr><td><code>session_policy</code></td><td>список устройств и сессий</td><td>Системное</td><td>Лимит одновременных сессий на устройство</td></tr>
+              <tr><td><code>created_at / updated_at / last_login_at</code></td><td>timestamp</td><td>Системное</td><td>Аналитика и удержание</td></tr>
+              <tr><td><code>deleted_at</code></td><td>timestamp / null</td><td>Системное</td><td>Мягкое удаление и 30‑дневное окно восстановления</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="font-size: 0.85rem;">* <code>password_hash</code> не нужен, если игрок вошёл только через внешнего провайдера; при добавлении e‑mail позже — обязателен.</p>
+
+        <h3>8.3 Свойства персонажа</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Поле</th>
+                <th>Тип</th>
+                <th>Правило</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>character_id</code></td><td>UUID</td><td>Первичный ключ, глобально уникальный</td></tr>
+              <tr><td><code>account_id</code></td><td>UUID</td><td>Владелец; каскадное удаление по правилу аккаунта</td></tr>
+              <tr><td><code>server_id</code></td><td>UUID</td><td>Сервер создания; смена — платная услуга с лимитом</td></tr>
+              <tr><td><code>slot_index</code></td><td>1–4</td><td>Уникален в паре (account_id, server_id)</td></tr>
+              <tr><td><code>name</code></td><td>2–16 символов</td><td>Уникален в рамках server_id, без учёта регистра</td></tr>
+              <tr><td><code>class / race / gender</code></td><td>справочники</td><td>Класс не меняется платно — только внутриигровым ритуалом</td></tr>
+              <tr><td><code>level / experience</code></td><td>int / bigint</td><td>Кап 60 в MVP; опыт не покупается</td></tr>
+              <tr><td><code>stats</code></td><td>JSON</td><td>База + бонусы; пересчитываются сервером, не клиентом</td></tr>
+              <tr><td><code>equipment / inventory</code></td><td>JSON или таблицы</td><td>Ссылки на экземпляры предметов с заточкой</td></tr>
+              <tr><td><code>position</code></td><td>зона + координаты</td><td>Нужна для корректного выхода из мира и осад</td></tr>
+              <tr><td><code>guild_id / guild_rank</code></td><td>UUID / enum</td><td>Принадлежность и права в гильдии</td></tr>
+              <tr><td><code>pvp_karma / bounty</code></td><td>int</td><td>Розыск и награда за голову</td></tr>
+              <tr><td><code>titles / achievements</code></td><td>список</td><td>Социальный капитал; часть общая с аккаунтом</td></tr>
+              <tr><td><code>playtime / last_played_at</code></td><td>int / timestamp</td><td>Отбор неактивных имён, аналитика</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>8.4 Правила и валидации</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Правило</th>
+                <th>Поведение системы</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>E‑mail уже занят</td><td>Предложить вход или привязку провайдера; не сообщать, к какому аккаунту привязан</td></tr>
+              <tr><td>Имя персонажа занято</td><td>Автосуффикс не предлагаем — игрок вводит новое (суффиксы ломают социальную ценность имени)</td></tr>
+              <tr><td>Вход через провайдера с почтой, которая уже в базе</td><td>Запросить пароль от существующего аккаунта, затем привязать провайдера</td></tr>
+              <tr><td>Возраст ниже порога региона</td><td>Блокировка регистрации или родительский контроль по правилам страны</td></tr>
+              <tr><td>Отказ от обязательных согласий</td><td>Регистрация не завершается, аккаунт не создаётся</td></tr>
+              <tr><td>Регион без доступных серверов</td><td>Регистрация возможна, игра — после выбора сервера; серверы с ограничением скрыты</td></tr>
+              <tr><td>Повторная регистрация с того же устройства</td><td>Разрешаем, но помечаем risk_score; влияет на лимиты торговли</td></tr>
+              <tr><td>Удаление аккаунта</td><td>Мягкое удаление, 30 дней на восстановление, затем анонимизация с сохранением агрегатов</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>8.5 Что нельзя хранить</h3>
+        <div class="warning-box">
+          <strong>Запрещено к хранению:</strong>
+          <ul style="margin-bottom: 0;">
+            <li>Пароли в открытом виде и любые обратимые хеши; CVV и полные данные карт (только токены платёжного провайдера).</li>
+            <li>Токены внешних провайдеров — храним только идентификаторы привязки.</li>
+            <li>Сырые данные документов: возраст храним как флаг проверки, а не как дату рождения.</li>
+            <li>Геолокацию точнее страны/региона — если это не требуется отдельно и явно.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============================ 9. БД ============================ -->
+      <section id="db-architecture">
+        <h2>9. Архитектура данных (PostgreSQL)</h2>
+
+        <h3>9.1 Логическая модель</h3>
+        <ul>
+          <li><strong>Account 1 : N Character</strong> — базово 2, максимум 4; жёсткое ограничение на уровне БД и сервиса.</li>
+          <li><strong>Account 1 : 1 AccountProfile</strong> — премиум‑валюта, косметика, достижения аккаунта, батлпасс.</li>
+          <li><strong>Account 1 : N AccountBank (по серверу)</strong> — общий склад в разрезе <code>server_id</code>.</li>
+          <li><strong>Account 1 : N AccountUnlock</strong> — слоты персонажей и разблокированные функции.</li>
+          <li><strong>Character N : 1 Server</strong> — персонаж не может существовать вне сервера.</li>
+        </ul>
+
+        <h3>9.2 JSON‑контракт создания аккаунта</h3>
+<pre><code>POST /v1/auth/register
+{
+  "login": "fermer_perm",
+  "email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="69190508100c1b290c11080419050c470a0604">[email&#160;protected]</a>",
+  "password": "**************",          // не хранится, только argon2id-хеш
+  "display_name": "Фермер",
+  "locale": "ru-RU",
+  "timezone": "Asia/Yekaterinburg",
+  "country": "RU",
+  "birth_date": "1994-05-12",           // сохраняем только результат проверки возраста
+  "auth_provider": "email",             // email | steam | google | apple
+  "consents": {
+    "eula":      { "version": "2026-10-01", "accepted": true },
+    "privacy":   { "version": "2026-10-01", "accepted": true },
+    "marketing": { "version": "2026-10-01", "accepted": false }
+  },
+  "device_fingerprint": "…",            // для risk_score и лимитов
+  "referral_code": null
+}
+
+// 201 Created
+{
+  "account_id": "0192f0c4-…",
+  "status": "limited",                  // full после подтверждения e-mail
+  "unlocked_character_slots": 2,
+  "next_step": "verify_email"
+}</code></pre>
+
+        <h3>9.3 JSON‑контракт создания персонажа</h3>
+<pre><code>POST /v1/characters
+{
+  "account_id": "0192f0c4-…",
+  "server_id": "eu-perm-01",
+  "slot_index": 1,                      // 1..unlocked_character_slots
+  "name": "Рудокоп",
+  "class": "miner",                     // miner | hunter | warden | arcanist | ...
+  "appearance": { "preset": 4, "tint": 2 }
+}
+
+// 409 Conflict — исчерпаны слоты или имя занято на сервере
+{ "error": "CHARACTER_SLOTS_EXHAUSTED",
+  "detail": { "unlocked": 2, "used": 2, "purchase_extra_slots": [3, 4] } }</code></pre>
+
+        <h3>9.4 SQL‑каркас</h3>
+<pre><code>-- Аккаунты
+CREATE TABLE accounts (
+  account_id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  login              citext UNIQUE NOT NULL,
+  email              citext UNIQUE NOT NULL,
+  email_verified_at  timestamptz,
+  password_hash      text,                    -- NULL для OAuth-only
+  display_name       text NOT NULL,
+  status             text NOT NULL DEFAULT 'limited'
+                     CHECK (status IN ('limited','full','suspended','banned','deleted')),
+  role               text NOT NULL DEFAULT 'player',
+  country            char(2) NOT NULL DEFAULT 'RU',
+  locale             text NOT NULL DEFAULT 'ru-RU',
+  timezone           text NOT NULL DEFAULT 'Asia/Yekaterinburg',
+  age_verified       boolean NOT NULL DEFAULT false,
+  premium_currency   bigint NOT NULL DEFAULT 0,
+  unlocked_slots     smallint NOT NULL DEFAULT 2 CHECK (unlocked_slots BETWEEN 2 AND 4),
+  premium_until      timestamptz,
+  risk_score         smallint NOT NULL DEFAULT 0,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  updated_at         timestamptz NOT NULL DEFAULT now(),
+  last_login_at      timestamptz,
+  deleted_at         timestamptz
+);
+
+-- Привязки внешних провайдеров
+CREATE TABLE account_identities (
+  identity_id  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id   uuid NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+  provider     text NOT NULL CHECK (provider IN ('steam','google','apple','email')),
+  provider_uid text NOT NULL,
+  created_at   timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (provider, provider_uid)
+);
+
+-- Серверы
+CREATE TABLE servers (
+  server_id  text PRIMARY KEY,               -- eu-perm-01
+  region     text NOT NULL,
+  ruleset    text NOT NULL DEFAULT 'pvp_open',
+  capacity   integer NOT NULL DEFAULT 5000
+);
+
+-- Персонажи
+CREATE TABLE characters (
+  character_id   uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id     uuid NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+  server_id      text NOT NULL REFERENCES servers(server_id),
+  slot_index     smallint NOT NULL,
+  name           citext NOT NULL,
+  class          text NOT NULL,
+  level          smallint NOT NULL DEFAULT 1,
+  experience     bigint NOT NULL DEFAULT 0,
+  stats          jsonb NOT NULL DEFAULT '{}'::jsonb,
+  position       jsonb,
+  guild_id       uuid,
+  pvp_karma      integer NOT NULL DEFAULT 0,
+  created_at     timestamptz NOT NULL DEFAULT now(),
+  last_played_at timestamptz,
+  deleted_at     timestamptz,
+  UNIQUE (account_id, server_id, slot_index),      -- не более N персонажей на сервере
+  UNIQUE (server_id, name)                          -- имя уникально на сервере
+);
+
+-- Общий склад в рамках сервера
+CREATE TABLE account_bank (
+  account_id  uuid NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+  server_id   text NOT NULL REFERENCES servers(server_id),
+  slots       jsonb NOT NULL DEFAULT '[]'::jsonb,
+  PRIMARY KEY (account_id, server_id)
+);
+
+-- Разблокировки (слоты, рецепты, функции)
+CREATE TABLE account_unlocks (
+  account_id  uuid NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+  unlock_key  text NOT NULL,               -- slot_3, slot_4, recipe_…
+  granted_at  timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (account_id, unlock_key)
+);
+
+-- Сессии
+CREATE TABLE sessions (
+  session_id  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id  uuid NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+  device_id   text,
+  ip_hash     text,                        -- хеш, не сырой IP
+  started_at  timestamptz NOT NULL DEFAULT now(),
+  expires_at  timestamptz NOT NULL,
+  revoked_at  timestamptz
+);</code></pre>
+
+        <h3>9.5 Индексы для производительности</h3>
+<pre><code>CREATE INDEX idx_characters_account ON characters(account_id) WHERE deleted_at IS NULL;
+CREATE INDEX idx_characters_server ON characters(server_id, slot_index);
+CREATE INDEX idx_sessions_account ON sessions(account_id) WHERE revoked_at IS NULL;
+CREATE INDEX idx_identities_provider ON account_identities(provider, provider_uid);
+CREATE UNIQUE INDEX idx_characters_name_ci ON characters(server_id, lower(name::text));</code></pre>
+
+        <div class="info-box">
+          <strong>Инварианты (проверяются в сервисе и в CI):</strong>
+          <ul style="margin-bottom: 0;">
+            <li>Количество непустых слотов персонажа на аккаунт ≤ <code>unlocked_slots</code>.</li>
+            <li>Персонаж не может ссылаться на сервер, недоступный региону аккаунта.</li>
+            <li>Ни одно поле аккаунта не влияет на боевые характеристики персонажа.</li>
+          </ul>
+        </div>
+
+        <h3>9.6 События для аналитики и антифрода</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Событие</th>
+                <th>Полезная нагрузка</th>
+                <th>Зачем</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>account.registered</code></td><td>provider, country, locale, device_fingerprint, referral</td><td>Воронка регистрации, источники трафика</td></tr>
+              <tr><td><code>account.verified</code></td><td>канал, время до верификации</td><td>Конверсия в full‑аккаунт</td></tr>
+              <tr><td><code>character.created</code></td><td>server_id, slot_index, class</td><td>Выбор классов и серверов, баланс</td></tr>
+              <tr><td><code>character.deleted</code></td><td>причина, время жизни</td><td>Причины ухода, антифрод</td></tr>
+              <tr><td><code>trade.completed</code></td><td>игрок, объём, класс предмета</td><td>RMT‑детект, инфляция</td></tr>
+              <tr><td><code>enchant.attempt</code></td><td>уровень, результат, страховка</td><td>Кривая риска, экономика стоков</td></tr>
+              <tr><td><code>session.started</code></td><td>устройство, IP‑хеш, длительность</td><td>Мультибоксинг, вовлечённость</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>9.7 API и сетевая часть</h3>
+        <ul>
+          <li><strong>Протокол:</strong> HTTPS, JWT + refresh‑токены, авторизация на уровне сервиса, а не клиента.</li>
+          <li><strong>Основные эндпоинты:</strong>
+            <ul>
+              <li><code>POST /v1/auth/register</code> — регистрация аккаунта.</li>
+              <li><code>POST /v1/auth/verify</code> — подтверждение e‑mail.</li>
+              <li><code>POST /v1/characters</code> — создание персонажа (проверка слотов и имени).</li>
+              <li><code>GET /v1/characters</code> — список персонажей аккаунта по серверам.</li>
+              <li><code>GET /v1/economy/balance</code> — премиум‑валюта и ресурсы аккаунта.</li>
+              <li><code>POST /v1/farming/start</code> · <code>GET /v1/farming/status</code> — фарм‑сессия и её статус.</li>
+              <li><code>POST /v1/storage/open</code> — открытие хранилища (пароль + права).</li>
+            </ul>
+          </li>
+          <li><strong>Идемпотентность:</strong> операции заточки, покупки и торговли принимают <code>Idempotency-Key</code>.</li>
+        </ul>
+      </section>
+
+      <!-- ============================ 10. МЕТРИКИ ============================ -->
+      <section id="metrics">
+        <h2>10. Сезоны, метрики и лайв‑операции</h2>
+
+        <h3>10.1 Ритм контента</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Период</th>
+                <th>Что происходит</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>День</td><td>Споты и боссы по расписанию, караваны между регионами</td></tr>
+              <tr><td>Неделя</td><td>Две осады, обновление контрактов гильдий, ротация зон с бонусным дропом</td></tr>
+              <tr><td>Месяц</td><td>Событие с сжиганием ресурсов (держит инфляцию), сезонная награда</td></tr>
+              <tr><td>Сезон (10–12 недель)</td><td>Сброс рейтингов, пересмотр территорий, новый слой контента и батлпасс</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>10.2 Метрики</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Метрика</th>
+                <th>Цель</th>
+                <th>Комментарий</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>D1 / D7 / D30 удержание</td><td>35% / 15% / 7%</td><td>Ориентир для core‑MMORPG без мобильных бенчмарков</td></tr>
+              <tr><td>Время до капа уровня</td><td>18–24 ч</td><td>Новичок доходит до меты за 2–3 недели, а не за 3 месяца</td></tr>
+              <tr><td>Доля игроков в гильдии к D14</td><td>≥ 55%</td><td>Гильдия — главный предиктор удержания</td></tr>
+              <tr><td>Оборот аукциона</td><td>растёт медленнее числа игроков</td><td>Индикатор инфляции</td></tr>
+              <tr><td>Регистрация → первый персонаж</td><td>≥ 85%</td><td>Качество флоу и трения на входе</td></tr>
+              <tr><td>Аккаунты с 2 персонажами</td><td>30–45%</td><td>Проверка гипотезы «2 персонажа нужны»</td></tr>
+              <tr><td>Платежи без влияния на силу</td><td>100%</td><td>Политика, проверяется ежемесячно</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>10.3 Технические и правовые требования</h3>
+        <ul>
+          <li><strong>Авторитет сервера:</strong> клиент не считает характеристики, шансы и дроп. Всё, что влияет на экономику, — на сервере.</li>
+          <li><strong>Единый аккаунт‑центр</strong> с одним <code>account_id</code> для всех провайдеров и платформ.</li>
+          <li><strong>Шардирование по серверам</strong> с общим аккаунт‑слоем: персонажи и банк на шарде, аккаунт — глобально.</li>
+          <li><strong>Идемпотентность</strong> операций заточки, покупки и торговли; <strong>аудит</strong> экономических сущностей в append‑only лог.</li>
+          <li><strong>ПД:</strong> минимальный набор, сроки хранения, экспорт и удаление по запросу, отдельное согласие на маркетинг.</li>
+          <li><strong>Регионы:</strong> возрастные пороги, родительский контроль, обязательный Sign in with Apple для iOS, флаги платёжных методов.</li>
+        </ul>
+      </section>
+
+      <!-- ============================ 11. ROADMAP ============================ -->
+      <section id="roadmap">
+        <h2>11. Roadmap MVP</h2>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Этап</th>
+                <th>Срок</th>
+                <th>Фичи</th>
+                <th>Критерий выхода</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Прототип</td>
+                <td>0–4 мес.</td>
+                <td>Один регион, три класса, спот‑фарм, заточка, регистрация и 2 персонажа</td>
+                <td>Игрок играет 45 минут без падений и объяснений извне</td>
+              </tr>
+              <tr>
+                <td>Alpha (закрытая)</td>
+                <td>4–8 мес.</td>
+                <td>Гильдии, аукцион, PvP‑флаги, первые осады в упрощённом виде</td>
+                <td>D7 у теста ≥ 20%, экономика без взрывной инфляции</td>
+              </tr>
+              <tr>
+                <td>Beta</td>
+                <td>8–12 мес.</td>
+                <td>Сезон, батлпасс, античит, монетизация косметики</td>
+                <td>Платежи не влияют на силу (аудит), D30 ≥ 5%</td>
+              </tr>
+              <tr>
+                <td>Launch</td>
+                <td>12–15 мес.</td>
+                <td>Три сервера, полноценные осады, кросс‑события, мобильный компаньон</td>
+                <td>Стабильность 99.5%, готовность поддержки</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>11.1 Риски</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Риск</th>
+                <th>Вероятность</th>
+                <th>Влияние</th>
+                <th>Что делаем</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Конфликт за споты отпугивает новичков</td><td>Высокая</td><td>Высокое</td><td>Защитные зоны до 20 уровня, карма, разведённые по времени окна войн</td></tr>
+              <tr><td>Экономическая инфляция и разрушение рынка</td><td>Средняя</td><td>Высокое</td><td>Стоки на заточку, динамический дроп, события‑сжигатели</td></tr>
+              <tr><td>Ботоводство и RMT</td><td>Высокая</td><td>Высокое</td><td>Лимиты новичков, телеметрия, ML‑детект, санкции по гильдиям</td></tr>
+              <tr><td>Мультиаккаунтинг вместо слотов</td><td>Средняя</td><td>Среднее</td><td>Ограничение сессий на устройство, риск‑скор, ценность общего склада</td></tr>
+              <tr><td>Осады не собирают людей</td><td>Средняя</td><td>Среднее</td><td>Расписание в прайм‑тайм региона, награды за участие, публичные логи</td></tr>
+              <tr><td>2 персонажа расфокусируют игрока</td><td>Средняя</td><td>Среднее</td><td>Общий банк и косметика, разные роли, а не дубли</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================ 12. ПРИЛОЖЕНИЯ ============================ -->
+      <section id="appendix">
+        <h2>Приложения</h2>
+
+        <h3>A. Глоссарий</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Термин</th>
+                <th>Значение</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Спот</td><td>Ограниченная зона с мобами и элитным держателем; основной источник редкого ресурса</td></tr>
+              <tr><td>Флаг PvP</td><td>Состояние, при котором игрок может быть атакован и атаковать в спорной зоне</td></tr>
+              <tr><td>Карма / розыск</td><td>Накопленное наказание за нападения на мирных игроков; влияет на потери при смерти</td></tr>
+              <tr><td>Страховка</td><td>Предмет, ограничивающий потерю при неудачной заточке; не продаётся за деньги</td></tr>
+              <tr><td>Караван</td><td>Перевозка ресурсов между регионами; может быть ограблен</td></tr>
+              <tr><td>Слот персонажа</td><td>Разрешённое количество персонажей на аккаунт (2 базово, до 4)</td></tr>
+              <tr><td>Account bank</td><td>Общий склад персонажей одного аккаунта в пределах сервера</td></tr>
+              <tr><td>Limited‑аккаунт</td><td>Аккаунт без подтверждённого e‑mail: играть можно, торговать нельзя</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>B. Открытые вопросы</h3>
+        <ol>
+          <li><strong>Сезонный вайп силы или только рейтинга?</strong> Рекомендация: только рейтинги и территории; сила остаётся, иначе мета‑петля обесценивает вложения.</li>
+          <li><strong>Разрешать ли создавать второго персонажа на другом сервере?</strong> Рекомендация: только на том же сервере на старте; смена сервера — платная услуга.</li>
+          <li><strong>Платный ли слот 3–4 сразу или через сезон?</strong> Рекомендация: через сезон после запуска, чтобы не плодить фермы.</li>
+          <li><strong>Нужен ли телефон для полного аккаунта?</strong> Рекомендация: только для торговли выше установленного лимита.</li>
+          <li><strong>Формат фарма: открытый мир со спотами или сессионные зоны с таймером?</strong> Текущая версия документа описывает открытый мир с ручным фармом. Если в MVP остаются зоны с таймером и автофармом, нужно решить, что ограничивает экономику дефицита — таймер или риск потери в открытом мире.</li>
+          <li><strong>Насколько жёсткой должна быть потеря экипировки при смерти?</strong> Открытый вопрос баланса, требует теста на Alpha.</li>
+        </ol>
+
+        <h3>C. Чек‑лист решения по аккаунту</h3>
+        <ul class="checklist">
+          <li>Зафиксирована политика: 1 аккаунт = 2 персонажа базово, до 4 через платные разблокировки.</li>
+          <li>Определены общие сущности аккаунта: премиум‑валюта, косметика, достижения, батлпасс, склад в рамках сервера.</li>
+          <li>Определены персональные сущности персонажа: класс, уровень, характеристики, экипировка, инвентарь, гильдия, карма.</li>
+          <li>Зафиксирован статус limited до подтверждения e‑mail и его влияние на торговлю.</li>
+          <li>Определены правила смены сервера, удаления персонажа и карантина.</li>
+          <li>Определены ограничения мультибоксинга: одна сессия на аккаунт, лимит сессий на устройство.</li>
+          <li>Согласованы инварианты для БД и тест в CI: поля аккаунта не влияют на бой.</li>
+        </ul>
+
+        <p class="footer-note">
+          Документ — рабочий черновик (v0.9). Следующий шаг: ревью механик раздела 5 с командой, затем фиксация схемы данных раздела 9 в техзадании для бэкенда.
+        </p>
+      </section>
+    </main>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+      (function () {
+        var body = document.body;
+        var sidebar = document.getElementById("sidebar");
+        var collapseBtn = document.getElementById("collapseToggle");
+        var navToggle = document.getElementById("navToggle");
+        var backdrop = document.getElementById("navBackdrop");
+        var tip = document.getElementById("tip");
+        var tipTitle = document.getElementById("tipTitle");
+        var tipDesc = document.getElementById("tipDesc");
+        var tipTarget = document.getElementById("tipTarget");
+        var links = Array.prototype.slice.call(document.querySelectorAll(".nav-list a"));
+        var mqMobile = window.matchMedia("(max-width: 900px)");
+
+        /* ---------------- Сворачивание панели ---------------- */
+        var STORAGE_KEY = "r4-nav-collapsed";
+
+        function setCollapsed(collapsed, remember) {
+          sidebar.classList.toggle("collapsed", collapsed);
+          collapseBtn.setAttribute("aria-expanded", String(!collapsed));
+          collapseBtn.setAttribute(
+            "data-tip-title",
+            collapsed ? "Развернуть меню" : "Свернуть меню"
+          );
+          if (remember) {
+            try { localStorage.setItem(STORAGE_KEY, collapsed ? "1" : "0"); } catch (e) {}
+          }
+          hideTip();
+        }
+
+        try {
+          if (localStorage.getItem(STORAGE_KEY) === "1") setCollapsed(true, false);
+        } catch (e) {}
+
+        collapseBtn.addEventListener("click", function () {
+          if (mqMobile.matches) { closeDrawer(); return; }
+          setCollapsed(!sidebar.classList.contains("collapsed"), true);
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.shiftKey && (e.key === "C" || e.key === "с")) {
+            if (mqMobile.matches) return;
+            setCollapsed(!sidebar.classList.contains("collapsed"), true);
+          }
+        });
+
+        /* ---------------- Мобильная выдвижная панель ---------------- */
+        function openDrawer() {
+          body.classList.add("nav-open");
+          backdrop.hidden = false;
+          navToggle.setAttribute("aria-expanded", "true");
+          collapseBtn.setAttribute("data-tip-title", "Закрыть меню");
+          collapseBtn.setAttribute(
+            "data-tip-desc",
+            "Панель закроется. Вернуть её можно кнопкой «Разделы» в левом верхнем углу."
+          );
+          collapseBtn.setAttribute("data-tip-target", "Клавиша: Esc");
+        }
+        function closeDrawer() {
+          body.classList.remove("nav-open");
+          backdrop.hidden = true;
+          navToggle.setAttribute("aria-expanded", "false");
+          hideTip();
+        }
+        navToggle.addEventListener("click", function () {
+          body.classList.contains("nav-open") ? closeDrawer() : openDrawer();
+        });
+        backdrop.addEventListener("click", closeDrawer);
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") closeDrawer();
+        });
+        mqMobile.addEventListener("change", function () {
+          closeDrawer();
+          var collapsed = sidebar.classList.contains("collapsed");
+          collapseBtn.setAttribute("data-tip-title", collapsed ? "Развернуть меню" : "Свернуть меню");
+          collapseBtn.setAttribute(
+            "data-tip-desc",
+            "Панель сожмётся до иконок, а текст останется в подсказках при наведении. Состояние запоминается."
+          );
+          collapseBtn.setAttribute("data-tip-target", "Клавиша: Shift + C");
+        });
+
+        /* ---------------- Подсказки ---------------- */
+        var tipOwner = null;
+
+        function showTip(el) {
+          var title = el.getAttribute("data-tip-title");
+          if (!title) return;
+          tipTitle.textContent = title;
+          tipDesc.textContent = el.getAttribute("data-tip-desc") || "";
+          tipTarget.textContent = el.getAttribute("data-tip-target") || "";
+          tip.classList.add("show");
+          tip.setAttribute("aria-hidden", "false");
+          tipOwner = el;
+          positionTip(el);
+        }
+
+        function positionTip(el) {
+          var r = el.getBoundingClientRect();
+          var pad = 12;
+          var tw = tip.offsetWidth;
+          var th = tip.offsetHeight;
+          var x = r.right + pad;
+          var y = r.top + r.height / 2 - th / 2;
+
+          if (sidebar.classList.contains("collapsed")) x = r.right + 14;
+          if (x + tw > window.innerWidth - 10) x = Math.max(10, r.left - tw - pad);
+          if (y < 10) y = 10;
+          if (y + th > window.innerHeight - 10) y = window.innerHeight - th - 10;
+
+          tip.style.left = Math.round(x) + "px";
+          tip.style.top = Math.round(y) + "px";
+        }
+
+        function hideTip() {
+          tip.classList.remove("show");
+          tip.setAttribute("aria-hidden", "true");
+          tipOwner = null;
+        }
+
+        Array.prototype.slice
+          .call(document.querySelectorAll("[data-tip-title]"))
+          .forEach(function (el) {
+            el.addEventListener("mouseenter", function () { showTip(el); });
+            el.addEventListener("mouseleave", hideTip);
+            el.addEventListener("focus", function () { showTip(el); });
+            el.addEventListener("blur", hideTip);
+            // на тач-устройствах — по тапу
+            el.addEventListener("click", function () {
+              if (window.matchMedia("(hover: none)").matches) {
+                tipOwner === el ? hideTip() : showTip(el);
+              }
+            });
+          });
+
+        window.addEventListener("scroll", function () { if (tipOwner) positionTip(tipOwner); }, { passive: true });
+        window.addEventListener("resize", function () { if (tipOwner) positionTip(tipOwner); });
+
+        /* ---------------- Активный раздел ---------------- */
+        var sections = links
+          .map(function (link) {
+            var el = document.querySelector(link.getAttribute("href"));
+            return el ? { link: link, el: el } : null;
+          })
+          .filter(Boolean);
+
+        function activate() {
+          var pos = window.scrollY + window.innerHeight * 0.3;
+          var current = sections[0];
+          sections.forEach(function (s) { if (s.el.offsetTop <= pos) current = s; });
+          links.forEach(function (l) { l.classList.remove("active"); });
+          if (current) current.link.classList.add("active");
+        }
+
+        window.addEventListener("scroll", activate, { passive: true });
+        window.addEventListener("resize", activate);
+        activate();
+
+        /* ---------------- Клик по пункту меню ---------------- */
+        links.forEach(function (link) {
+          link.addEventListener("click", function (e) {
+            var target = document.querySelector(link.getAttribute("href"));
+            if (!target) return;
+            e.preventDefault();
+            hideTip();
+            if (mqMobile.matches) closeDrawer();
+            var y = target.getBoundingClientRect().top + window.scrollY - 12;
+            window.scrollTo({ top: y, behavior: "smooth" });
+            history.replaceState(null, "", link.getAttribute("href"));
+          });
+        });
+      })();
+    </script>
+  <script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a522e646fac28dc3',t:'MTc5MzI4NDQ1MA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a522e646fac28dc3',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
